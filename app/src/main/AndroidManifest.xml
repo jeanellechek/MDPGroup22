@@ -30,7 +30,6 @@
       android:label="@string/select_device"
       android:theme="@android:style/Theme.Holo.Dialog" />
     <activity android:name=".ConfigurableCommActivity" />
-    <activity android:name=".C8Activity"></activity>
   </application>
 
 </manifest>
