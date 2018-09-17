@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:id="@+id/main_fragment">
+
+    <RelativeLayout
+        android:id="@+id/wrapperLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="60dp"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/containerOneLayout"
+            android:layout_width="match_parent"
+            android:layout_height="646dp"
+            android:background="#eeeeee"
+            android:orientation="vertical">
+
+
+            <GridLayout
+                android:id="@+id/gridMapLayout"
+                android:layout_width="485dp"
+                android:layout_height="646dp"
+                android:columnCount="15"
+                android:columnWidth="30dp"
+                android:gravity="center"
+                android:rowCount="20"></GridLayout>
+
+            <RelativeLayout
+                android:id="@+id/etcLayout"
+                android:layout_width="120dp"
+                android:layout_height="646dp"
+                android:layout_alignParentRight="true"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/waypointLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp"
+                    android:background="#008000"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/waypointLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Waypoint"
+                        android:textColor="#000066"
+                        android:textSize="18dp" />
+
+                    <TextView
+                        android:id="@+id/xText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/waypointLabel"
+                        android:text="X:"
+                        android:textColor="#000066"
+                        android:textSize="15dp" />
+
+                    <EditText
+                        android:id="@+id/xValue"
+                        android:layout_width="80dp"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="25dp"
+                        android:layout_toRightOf="@+id/xText"
+                        android:inputType="number"
+                        android:textSize="15dp" />
+
+                    <TextView
+                        android:id="@+id/yText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="55dp"
+                        android:text="Y:"
+                        android:textColor="#000066"
+                        android:textSize="15dp" />
+
+                    <EditText
+                        android:id="@+id/yValue"
+                        android:layout_width="80dp"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="60dp"
+                        android:layout_toRightOf="@+id/yText"
+                        android:inputType="number"
+                        android:textSize="15dp" />
+
+                    <Button
+                        android:id="@+id/waypointButton"
+                        android:layout_width="100dp"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="100dp"
+                        android:gravity="center"
+                        android:text="Set waypoint"
+                        android:textSize="11dp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/fastestPathLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_below="@+id/waypointLayout"
+                    android:layout_margin="5dp"
+                    android:background="#008000"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Timing"
+                        android:textColor="#000066"
+                        android:textSize="18dp" />
+
+                    <TextView
+                        android:id="@+id/fastestPathLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="28dp"
+                        android:text="Fastest Path"
+                        android:textColor="#000066"
+                        android:textSize="15dp" />
+
+                    <TextView
+                        android:id="@+id/timerValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/fastestPathLabel"
+                        android:text="00:00:000"
+                        android:textColor="#000066"
+                        android:textSize="15dp" />
+
+                    <Button
+                        android:id="@+id/startButton"
+                        android:layout_width="90dp"
+                        android:layout_height="45dp"
+                        android:layout_below="@+id/timerValue"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center"
+                        android:text="start" />
+
+                    <Button
+                        android:id="@+id/stopButton"
+                        android:layout_width="90dp"
+                        android:layout_height="45dp"
+                        android:layout_below="@+id/timerValue"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center"
+                        android:text="stop"
+                        android:visibility="invisible" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/explorationLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_below="@+id/fastestPathLayout"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:background="#008000"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/explorationLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Exploration"
+                        android:textColor="#000066"
+                        android:textSize="15dp" />
+
+                    <TextView
+                        android:id="@+id/timerValue1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/explorationLabel"
+                        android:text="00:00:000"
+                        android:textColor="#000066"
+                        android:textSize="15dp" />
+
+                    <Button
+                        android:id="@+id/startButton1"
+                        android:layout_width="90dp"
+                        android:layout_height="45dp"
+                        android:layout_below="@+id/timerValue1"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center"
+                        android:text="start" />
+
+                    <Button
+                        android:id="@+id/stopButton1"
+                        android:layout_width="90dp"
+                        android:layout_height="45dp"
+                        android:layout_below="@+id/timerValue1"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center"
+                        android:text="stop"
+                        android:visibility="invisible" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/containerTwoLayout"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:layout_below="@+id/containerOneLayout"
+            android:background="#000066"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/directionsLayout"
+                android:layout_width="250dp"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:orientation="horizontal">
+
+
+                <Button
+                    android:id="@+id/upButton"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="12dp"
+                    android:text="Up" />
+
+                <Button
+                    android:id="@+id/downButton"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="100dp"
+                    android:text="Down" />
+
+
+                <Button
+                    android:id="@+id/leftButton"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:layout_centerVertical="true"
+                    android:text="Left" />
+
+                <Button
+                    android:id="@+id/rightButton"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:layout_toRightOf="@+id/leftButton"
+                    android:layout_centerVertical="true"
+                    android:text="Right" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/controlsLayout"
+                android:layout_width="250dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_margin="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/movementTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:text="Turning left "
+                    android:textColor="#FFFFFF"
+                    android:textSize="20dp" />
+
+
+
+                <Button
+                    android:id="@+id/autoButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/movementTextView"
+                    android:text="Auto" />
+
+                <Button
+                    android:id="@+id/manualButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/movementTextView"
+                    android:text="Manual"
+                    android:visibility="invisible" />
+
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <include
+        layout="@layout/app_bar_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</FrameLayout>
