@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     //for waypoint
     ArrayList<Integer> waypointList = new ArrayList<Integer>();
 
+    //for rotation
+    String currentDirection = "up";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
         //MAP
         //HARDCODE FOR NOW
-        topLeftCorner = 0;
+        topLeftCorner = 255;
 
         GridLayout foreground = findViewById(R.id.gridMapLayout);
         Drawable box = this.getResources().getDrawable(R.drawable.box);
@@ -107,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
-
 
 
             foreground.addView(boxID);
@@ -188,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                robotMovement("up");
+                robotMovement();
 
             }
         });
@@ -199,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                robotMovement("down");
+                robotRotate("down");
 
             }
         });
@@ -210,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                robotMovement("left");
+                robotRotate("left");
 
             }
         });
@@ -221,12 +222,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                robotMovement("right");
+                robotRotate("right");
 
             }
         });
-
-
 
 
     }
@@ -291,9 +290,96 @@ public class MainActivity extends AppCompatActivity {
 
     };
 
-    public void robotMovement(String direction) {
+    public void robotRotate(String direction) {
 
-        switch (direction) {
+
+        Drawable box = this.getResources().getDrawable(R.drawable.box);
+        Drawable robot = this.getResources().getDrawable(R.drawable.robot);
+
+        Drawable upImage = this.getResources().getDrawable(R.drawable.up);
+        Drawable downImage = this.getResources().getDrawable(R.drawable.down);
+        Drawable leftImage = this.getResources().getDrawable(R.drawable.left);
+        Drawable rightImage = this.getResources().getDrawable(R.drawable.right);
+
+        for (int y = 0; y < 300; y++) {
+            TextView t = findViewById(y);
+            if (!waypointList.contains(y)) {
+                if (y == topLeftCorner || y == topLeftCorner + 1 || y == topLeftCorner + 2 || y == topLeftCorner + 15 || y == topLeftCorner + 16 || y == topLeftCorner + 17
+                        || y == topLeftCorner + 30 || y == topLeftCorner + 31 || y == topLeftCorner + 32) {
+                    //if (topLeftCorner + y < topLeftCorner + 3)
+                    if (y == topLeftCorner + 16) {
+                        t.setText("");
+                        switch (direction) {
+                            case "left":
+                                if (currentDirection == "up") {
+                                    t.setBackground(leftImage);
+                                    currentDirection = "left";
+                                } else if (currentDirection == "right") {
+                                    t.setBackground(upImage);
+                                    currentDirection = "up";
+                                } else if (currentDirection == "down") {
+                                    t.setBackground(rightImage);
+                                    currentDirection = "right";
+                                } else if (currentDirection == "left") {
+                                    t.setBackground(downImage);
+                                    currentDirection = "down";
+                                }
+                                break;
+                            case "down":
+                                if (currentDirection == "left") {
+                                    t.setBackground(rightImage);
+                                    currentDirection = "right";
+                                } else if (currentDirection == "right") {
+                                    t.setBackground(leftImage);
+                                    currentDirection = "left";
+                                } else if (currentDirection == "down") {
+                                    t.setBackground(upImage);
+                                    currentDirection = "up";
+                                } else if (currentDirection == "up") {
+                                    t.setBackground(downImage);
+                                    currentDirection = "down";
+                                }
+                                break;
+                            case "right":
+                                if (currentDirection == "left") {
+                                    t.setBackground(upImage);
+                                    currentDirection = "up";
+                                } else if (currentDirection == "right") {
+                                    t.setBackground(downImage);
+                                    currentDirection = "down";
+                                } else if (currentDirection == "up") {
+                                    t.setBackground(rightImage);
+                                    currentDirection = "right";
+                                } else if (currentDirection == "down") {
+                                    t.setBackground(leftImage);
+                                    currentDirection = "left";
+                                }
+                                break;
+
+                        }
+                    } else {
+                        t.setBackground(robot);
+                        t.setText("1");
+                        t.setTextColor(Color.parseColor("#FF0000"));
+                    }
+
+                }
+            }
+
+
+        }
+    }
+
+    public void robotMovement() {
+        Drawable box = this.getResources().getDrawable(R.drawable.box);
+        Drawable robot = this.getResources().getDrawable(R.drawable.robot);
+
+        Drawable upImage = this.getResources().getDrawable(R.drawable.up);
+        Drawable downImage = this.getResources().getDrawable(R.drawable.down);
+        Drawable leftImage = this.getResources().getDrawable(R.drawable.left);
+        Drawable rightImage = this.getResources().getDrawable(R.drawable.right);
+
+        switch (currentDirection) {
             case "up":
                 if (topLeftCorner < 15)
                     break;
@@ -321,14 +407,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        Drawable box = this.getResources().getDrawable(R.drawable.box);
-        Drawable robot = this.getResources().getDrawable(R.drawable.robot);
-
-        Drawable upImage = this.getResources().getDrawable(R.drawable.up);
-        Drawable downImage = this.getResources().getDrawable(R.drawable.down);
-        Drawable leftImage = this.getResources().getDrawable(R.drawable.left);
-        Drawable rightImage = this.getResources().getDrawable(R.drawable.right);
-
         for (int y = 0; y < 300; y++) {
             TextView t = findViewById(y);
             if (!waypointList.contains(y)) {
@@ -337,7 +415,7 @@ public class MainActivity extends AppCompatActivity {
                     //if (topLeftCorner + y < topLeftCorner + 3)
                     if (y == topLeftCorner + 16) {
                         t.setText("");
-                        switch (direction) {
+                        switch (currentDirection) {
                             case "up":
                                 t.setBackground(upImage);
                                 break;
@@ -364,6 +442,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+
     }
 
 
