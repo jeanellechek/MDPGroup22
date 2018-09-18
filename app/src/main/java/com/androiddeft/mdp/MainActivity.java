@@ -15,14 +15,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.TextView;
 
 import com.androiddeft.mdp.fragments.bluetooth.BluetoothChatFragment;
 
-public class MainActivity extends AppCompatActivity{
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
 
     //Map
     private GridView gridView;
@@ -30,9 +31,8 @@ public class MainActivity extends AppCompatActivity{
 
 
     //Timer
-    Button start, stop, auto, manual, configButton, bluetoothButton, up, down, left, right, waypointButton;
-    EditText xValue, yValue;
-    TextView time, boxID;
+    Button start, stop, auto, manual, configButton, bluetoothButton, up, down, left, right;
+    TextView time, boxID, xValue, yValue;
     private long startTime = 0L;
 
     private Handler customHandler = new Handler();
@@ -48,12 +48,15 @@ public class MainActivity extends AppCompatActivity{
     //for defining a request code, and then start the activity using that request code
     private static final int REQUEST_RECONFIGURE_STRING = 1;
 
+    //for waypoint
+    ArrayList<Integer> waypointList = new ArrayList<Integer>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //Display the MAIN FRAGMENT
@@ -63,21 +66,48 @@ public class MainActivity extends AppCompatActivity{
 
         //MAP
         //HARDCODE FOR NOW
-        topLeftCorner = 255;
+        topLeftCorner = 0;
 
-        GridLayout foreground = (GridLayout) findViewById(R.id.gridMapLayout);
+        GridLayout foreground = findViewById(R.id.gridMapLayout);
         Drawable box = this.getResources().getDrawable(R.drawable.box);
         Drawable robot = this.getResources().getDrawable(R.drawable.robot);
         Drawable upDirection = this.getResources().getDrawable(R.drawable.up);
-
+        final Drawable waypoint = this.getResources().getDrawable(R.drawable.waypoint);
 
         for (int x = 0; x < foreground.getColumnCount() * foreground.getRowCount(); x++) {
             boxID = new TextView(this);
             boxID.setBackground(box);
             boxID.setId(x);
-            //   boxID.setText(Integer.toString(boxID.getId()));
-            boxID.setText("0");
+            boxID.setText(String.valueOf(x));
+            boxID.setTextColor(Color.parseColor("#FF0000"));
             boxID.setGravity(Gravity.CENTER);
+
+
+            boxID.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //get the id of the selected box
+                    int point = view.getId();
+                    xValue = findViewById(R.id.xValue);
+                    yValue = findViewById(R.id.yValue);
+
+                    if (!(point == topLeftCorner || point == topLeftCorner + 1 || point == topLeftCorner + 2 || point == topLeftCorner + 15 || point == topLeftCorner + 16 || point == topLeftCorner + 17
+                            || point == topLeftCorner + 30 || point == topLeftCorner + 31 || point == topLeftCorner + 32)) {
+                        TextView tq = findViewById(point);
+                        tq.setBackground(waypoint);
+                        tq.setText("P");
+
+                        int xCoord = point % 15;
+                        int yCoord = 19 - ((point - xCoord) / 15);
+
+                        xValue.setText(String.valueOf(xCoord));
+                        yValue.setText(String.valueOf(yCoord));
+                    }
+                    waypointList.add(point);
+
+                }
+            });
+
 
 
             foreground.addView(boxID);
@@ -98,9 +128,9 @@ public class MainActivity extends AppCompatActivity{
         }
 
         //Timer
-        start = (Button) findViewById(R.id.startButton);
-        stop = (Button) findViewById(R.id.stopButton);
-        time = (TextView) findViewById(R.id.timerValue);
+        start = findViewById(R.id.startButton);
+        stop = findViewById(R.id.stopButton);
+        time = findViewById(R.id.timerValue);
         start.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -129,8 +159,8 @@ public class MainActivity extends AppCompatActivity{
         });
 
         //Auto or manual mode
-        auto = (Button) findViewById(R.id.autoButton);
-        manual = (Button) findViewById(R.id.manualButton);
+        auto = findViewById(R.id.autoButton);
+        manual = findViewById(R.id.manualButton);
 
         auto.setOnClickListener(new View.OnClickListener() {
 
@@ -152,7 +182,7 @@ public class MainActivity extends AppCompatActivity{
         });
 
         //Directions
-        up = (Button) findViewById(R.id.upButton);
+        up = findViewById(R.id.upButton);
 
         up.setOnClickListener(new View.OnClickListener() {
 
@@ -163,7 +193,7 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-        down = (Button) findViewById(R.id.downButton);
+        down = findViewById(R.id.downButton);
 
         down.setOnClickListener(new View.OnClickListener() {
 
@@ -174,7 +204,7 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-        left = (Button) findViewById(R.id.leftButton);
+        left = findViewById(R.id.leftButton);
 
         left.setOnClickListener(new View.OnClickListener() {
 
@@ -185,7 +215,7 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-        right = (Button) findViewById(R.id.rightButton);
+        right = findViewById(R.id.rightButton);
 
         right.setOnClickListener(new View.OnClickListener() {
 
@@ -197,22 +227,7 @@ public class MainActivity extends AppCompatActivity{
         });
 
 
-        //waypoint
-        waypointButton = (Button) findViewById(R.id.waypointButton);
-        xValue = (EditText) findViewById(R.id.xValue);
-        yValue = (EditText) findViewById(R.id.yValue);
-        final Drawable waypoint = this.getResources().getDrawable(R.drawable.waypoint);
 
-        waypointButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                int point = Integer.parseInt(String.valueOf(xValue.getText())) * Integer.parseInt(String.valueOf(xValue.getText()));
-                TextView t = (TextView) findViewById(point);
-                t.setText("P");
-                t.setBackground(waypoint);
-            }
-        });
 
     }
 
@@ -232,7 +247,7 @@ public class MainActivity extends AppCompatActivity{
         switch (item.getItemId()) {
             //for reconfiguring string commands - command 1 and command 2 (Task C8)
             case R.id.reconString: {
-                Intent reconStringIntent = new Intent(this,ConfigurableCommActivity.class);
+                Intent reconStringIntent = new Intent(this, ConfigurableCommActivity.class);
                 startActivityForResult(reconStringIntent, REQUEST_RECONFIGURE_STRING);
                 return true;
             }
@@ -315,35 +330,37 @@ public class MainActivity extends AppCompatActivity{
         Drawable rightImage = this.getResources().getDrawable(R.drawable.right);
 
         for (int y = 0; y < 300; y++) {
-            TextView t = (TextView) findViewById(y);
-            if (y == topLeftCorner || y == topLeftCorner + 1 || y == topLeftCorner + 2 || y == topLeftCorner + 15 || y == topLeftCorner + 16 || y == topLeftCorner + 17
-                    || y == topLeftCorner + 30 || y == topLeftCorner + 31 || y == topLeftCorner + 32) {
-                //if (topLeftCorner + y < topLeftCorner + 3)
-                if (y == topLeftCorner + 16) {
-                    t.setText("");
-                    switch (direction) {
-                        case "up":
-                            t.setBackground(upImage);
-                            break;
-                        case "down":
-                            t.setBackground(downImage);
-                            break;
-                        case "left":
-                            t.setBackground(leftImage);
-                            break;
-                        case "right":
-                            t.setBackground(rightImage);
-                            break;
+            TextView t = findViewById(y);
+            if (!waypointList.contains(y)) {
+                if (y == topLeftCorner || y == topLeftCorner + 1 || y == topLeftCorner + 2 || y == topLeftCorner + 15 || y == topLeftCorner + 16 || y == topLeftCorner + 17
+                        || y == topLeftCorner + 30 || y == topLeftCorner + 31 || y == topLeftCorner + 32) {
+                    //if (topLeftCorner + y < topLeftCorner + 3)
+                    if (y == topLeftCorner + 16) {
+                        t.setText("");
+                        switch (direction) {
+                            case "up":
+                                t.setBackground(upImage);
+                                break;
+                            case "down":
+                                t.setBackground(downImage);
+                                break;
+                            case "left":
+                                t.setBackground(leftImage);
+                                break;
+                            case "right":
+                                t.setBackground(rightImage);
+                                break;
 
+                        }
+                    } else {
+                        t.setBackground(robot);
+                        t.setText("1");
+                        t.setTextColor(Color.parseColor("#FF0000"));
                     }
-                } else {
-                    t.setBackground(robot);
-                    t.setText("1");
-                    t.setTextColor(Color.parseColor("#FF0000"));
-                }
 
-            } else
-                t.setBackground(box);
+                } else
+                    t.setBackground(box);
+            }
 
 
         }

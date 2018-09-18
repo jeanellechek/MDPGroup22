@@ -39,7 +39,7 @@
                 <RelativeLayout
                     android:id="@+id/waypointLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
+                    android:layout_height="80dp"
                     android:layout_margin="5dp"
                     android:background="#008000"
                     android:orientation="horizontal">
@@ -62,41 +62,34 @@
                         android:textColor="#000066"
                         android:textSize="15dp" />
 
-                    <EditText
+                    <TextView
                         android:id="@+id/xValue"
                         android:layout_width="80dp"
-                        android:layout_height="40dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="25dp"
                         android:layout_toRightOf="@+id/xText"
-                        android:inputType="number"
+                        android:textColor="#000066"
                         android:textSize="15dp" />
 
                     <TextView
                         android:id="@+id/yText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="55dp"
+                        android:layout_below="@+id/xText"
                         android:text="Y:"
                         android:textColor="#000066"
                         android:textSize="15dp" />
 
-                    <EditText
+                    <TextView
                         android:id="@+id/yValue"
                         android:layout_width="80dp"
-                        android:layout_height="40dp"
-                        android:layout_marginTop="60dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/xValue"
                         android:layout_toRightOf="@+id/yText"
-                        android:inputType="number"
+                        android:textColor="#000066"
                         android:textSize="15dp" />
 
-                    <Button
-                        android:id="@+id/waypointButton"
-                        android:layout_width="100dp"
-                        android:layout_height="50dp"
-                        android:layout_marginTop="100dp"
-                        android:gravity="center"
-                        android:text="Set waypoint"
-                        android:textSize="11dp" />
+
                 </RelativeLayout>
 
                 <RelativeLayout
