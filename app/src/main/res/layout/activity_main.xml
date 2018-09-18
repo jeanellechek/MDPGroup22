@@ -37,9 +37,79 @@
                 android:orientation="vertical">
 
                 <RelativeLayout
-                    android:id="@+id/waypointLayout"
+                    android:id="@+id/startLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:background="#008000"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/startLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:text="Start"
+                        android:textColor="#000066"
+                        android:textSize="18dp" />
+
+                    <TextView
+                        android:id="@+id/startXText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/startLabel"
+                        android:layout_centerHorizontal="true"
+                        android:text="X: "
+                        android:textColor="#000066"
+                        android:textSize="15dp" />
+
+                    <TextView
+                        android:id="@+id/startXValue"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="25dp"
+                        android:layout_toRightOf="@+id/startXText"
+                        android:layout_centerHorizontal="true"
+                        android:textColor="#000066"
+                        android:textSize="15dp" />
+
+                    <TextView
+                        android:id="@+id/startYText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/startXText"
+                        android:layout_centerHorizontal="true"
+                        android:text="Y: "
+                        android:textColor="#000066"
+                        android:textSize="15dp" />
+
+                    <TextView
+                        android:id="@+id/startYValue"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/startXValue"
+                        android:layout_toRightOf="@+id/startYText"
+                        android:layout_centerHorizontal="true"
+                        android:textColor="#000066"
+                        android:textSize="15dp" />
+
+                    <Button
+                        android:id="@+id/setStartBTN"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:text="Set Start"
+                        android:layout_below="@+id/startYText" />
+
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/waypointLayout"
+                    android:layout_below="@+id/startLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:background="#008000"
                     android:orientation="horizontal">
@@ -48,46 +118,59 @@
                         android:id="@+id/waypointLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
+                        android:layout_centerHorizontal="true"
                         android:text="Waypoint"
                         android:textColor="#000066"
                         android:textSize="18dp" />
 
                     <TextView
-                        android:id="@+id/xText"
+                        android:id="@+id/waypointXText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
                         android:layout_below="@+id/waypointLabel"
-                        android:text="X:"
+                        android:text="X: "
                         android:textColor="#000066"
                         android:textSize="15dp" />
 
                     <TextView
-                        android:id="@+id/xValue"
+                        android:id="@+id/waypointXValue"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
                         android:layout_marginTop="25dp"
-                        android:layout_toRightOf="@+id/xText"
+                        android:layout_toRightOf="@+id/waypointXText"
                         android:textColor="#000066"
                         android:textSize="15dp" />
 
                     <TextView
-                        android:id="@+id/yText"
+                        android:id="@+id/waypointYText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/xText"
-                        android:text="Y:"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@+id/waypointXText"
+                        android:text="Y: "
                         android:textColor="#000066"
                         android:textSize="15dp" />
 
                     <TextView
-                        android:id="@+id/yValue"
+                        android:id="@+id/waypointYValue"
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/xValue"
-                        android:layout_toRightOf="@+id/yText"
+                        android:layout_below="@+id/waypointXValue"
+                        android:layout_centerHorizontal="true"
+                        android:layout_toRightOf="@+id/waypointYText"
                         android:textColor="#000066"
                         android:textSize="15dp" />
+
+                    <Button
+                        android:id="@+id/setWaypointBTN"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:text="Set Waypoint"
+                        android:layout_below="@+id/waypointYText" />
 
 
                 </RelativeLayout>
@@ -104,6 +187,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
                         android:text="Timing"
                         android:textColor="#000066"
                         android:textSize="18dp" />
@@ -113,6 +197,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="28dp"
+                        android:layout_centerHorizontal="true"
                         android:text="Fastest Path"
                         android:textColor="#000066"
                         android:textSize="15dp" />
@@ -123,6 +208,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/fastestPathLabel"
                         android:text="00:00:000"
+                        android:layout_centerHorizontal="true"
                         android:textColor="#000066"
                         android:textSize="15dp" />
 
@@ -162,6 +248,7 @@
                         android:id="@+id/explorationLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
                         android:text="Exploration"
                         android:textColor="#000066"
                         android:textSize="15dp" />
@@ -170,6 +257,7 @@
                         android:id="@+id/timerValue1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
                         android:layout_below="@+id/explorationLabel"
                         android:text="00:00:000"
                         android:textColor="#000066"
@@ -268,7 +356,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="10dp"
-                    android:text="Turning left "
+                    android:text="Ready"
                     android:textColor="#FFFFFF"
                     android:textSize="20dp" />
 

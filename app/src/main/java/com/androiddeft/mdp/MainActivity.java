@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Timer
     Button start, stop, auto, manual, configButton, bluetoothButton, up, down, left, right;
-    TextView time, boxID, xValue, yValue;
+    TextView time, boxID;
     private long startTime = 0L;
 
     private Handler customHandler = new Handler();
@@ -50,9 +50,11 @@ public class MainActivity extends AppCompatActivity {
 
     //for waypoint
     ArrayList<Integer> waypointList = new ArrayList<Integer>();
+    TextView waypointXValue, waypointYValue;
 
     //for rotation
     String currentDirection = "up";
+    TextView movementTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             boxID = new TextView(this);
             boxID.setBackground(box);
             boxID.setId(x);
-            boxID.setText(String.valueOf(x));
+            //   boxID.setText(String.valueOf(x));
             boxID.setTextColor(Color.parseColor("#FF0000"));
             boxID.setGravity(Gravity.CENTER);
 
@@ -90,8 +92,8 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     //get the id of the selected box
                     int point = view.getId();
-                    xValue = findViewById(R.id.xValue);
-                    yValue = findViewById(R.id.yValue);
+                    waypointXValue = findViewById(R.id.waypointXValue);
+                    waypointYValue = findViewById(R.id.waypointYValue);
 
                     if (!(point == topLeftCorner || point == topLeftCorner + 1 || point == topLeftCorner + 2 || point == topLeftCorner + 15 || point == topLeftCorner + 16 || point == topLeftCorner + 17
                             || point == topLeftCorner + 30 || point == topLeftCorner + 31 || point == topLeftCorner + 32)) {
@@ -102,8 +104,8 @@ public class MainActivity extends AppCompatActivity {
                         int xCoord = point % 15;
                         int yCoord = 19 - ((point - xCoord) / 15);
 
-                        xValue.setText(String.valueOf(xCoord));
-                        yValue.setText(String.valueOf(yCoord));
+                        waypointXValue.setText(String.valueOf(xCoord));
+                        waypointYValue.setText(String.valueOf(yCoord));
                     }
                     waypointList.add(point);
 
@@ -183,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Directions
+        movementTextView = findViewById(R.id.movementTextView);
         up = findViewById(R.id.upButton);
 
         up.setOnClickListener(new View.OnClickListener() {
@@ -368,6 +371,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+        movementTextView.setText("Turning " + currentDirection);
     }
 
     public void robotMovement() {
@@ -442,7 +446,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
-
+        movementTextView.setText("Moved " + currentDirection);
     }
 
 
