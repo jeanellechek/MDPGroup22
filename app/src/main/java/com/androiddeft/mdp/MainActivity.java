@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androiddeft.mdp.fragments.bluetooth.BluetoothChatFragment;
 
@@ -52,9 +53,13 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Integer> waypointList = new ArrayList<Integer>();
     TextView waypointXValue, waypointYValue;
 
+    //for startpoint
+    TextView startXValue, startYValue;
+
     //for rotation
     String currentDirection = "up";
     TextView movementTextView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,11 +72,6 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment = new BluetoothChatFragment();
         displaySelectedFragment(fragment);
 
-
-        //MAP
-        //HARDCODE FOR NOW
-        topLeftCorner = 255;
-
         GridLayout foreground = findViewById(R.id.gridMapLayout);
         Drawable box = this.getResources().getDrawable(R.drawable.box);
         Drawable robot = this.getResources().getDrawable(R.drawable.robot);
@@ -82,11 +82,20 @@ public class MainActivity extends AppCompatActivity {
             boxID = new TextView(this);
             boxID.setBackground(box);
             boxID.setId(x);
-            //   boxID.setText(String.valueOf(x));
+            boxID.setText(String.valueOf(x));
             boxID.setTextColor(Color.parseColor("#FF0000"));
             boxID.setGravity(Gravity.CENTER);
 
-
+            boxID.setOnLongClickListener(new View.OnLongClickListener() {
+                public boolean onLongClick(View view) {
+                    topLeftCorner = view.getId();
+                    if (topLeftCorner >= 150)
+                        robotStart();
+                    Toast.makeText(getApplicationContext(), "Long Clicked ",
+                            Toast.LENGTH_SHORT).show();
+                    return true;    // <- set to true
+                }
+            });
             boxID.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -99,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                             || point == topLeftCorner + 30 || point == topLeftCorner + 31 || point == topLeftCorner + 32)) {
                         TextView tq = findViewById(point);
                         tq.setBackground(waypoint);
-                        tq.setText("P");
+                        tq.setText("W");
 
                         int xCoord = point % 15;
                         int yCoord = 19 - ((point - xCoord) / 15);
@@ -309,7 +318,6 @@ public class MainActivity extends AppCompatActivity {
             if (!waypointList.contains(y)) {
                 if (y == topLeftCorner || y == topLeftCorner + 1 || y == topLeftCorner + 2 || y == topLeftCorner + 15 || y == topLeftCorner + 16 || y == topLeftCorner + 17
                         || y == topLeftCorner + 30 || y == topLeftCorner + 31 || y == topLeftCorner + 32) {
-                    //if (topLeftCorner + y < topLeftCorner + 3)
                     if (y == topLeftCorner + 16) {
                         t.setText("");
                         switch (direction) {
@@ -410,7 +418,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
-
         for (int y = 0; y < 300; y++) {
             TextView t = findViewById(y);
             if (!waypointList.contains(y)) {
@@ -449,5 +456,72 @@ public class MainActivity extends AppCompatActivity {
         movementTextView.setText("Moved " + currentDirection);
     }
 
+    public void robotStart() {
+        startXValue = findViewById(R.id.startXValue);
+        startYValue = findViewById(R.id.startYValue);
+
+        //bottom
+        if ((19 - ((topLeftCorner - (topLeftCorner % 15)) / 15)) == 0)
+            topLeftCorner -= 30;
+        else if ((19 - ((topLeftCorner - (topLeftCorner % 15)) / 15)) == 1)
+            topLeftCorner -= 15;
+        //right
+        if ((topLeftCorner % 15) == 13)
+            topLeftCorner -= 1;
+        else if ((topLeftCorner % 15) == 14)
+            topLeftCorner -= 2;
+
+        int xCoord = topLeftCorner % 15;
+        int yCoord = 19 - ((topLeftCorner - xCoord) / 15);
+
+        startXValue.setText(String.valueOf(xCoord));
+        startYValue.setText(String.valueOf(yCoord));
+
+        Drawable box = this.getResources().getDrawable(R.drawable.box);
+        Drawable robot = this.getResources().getDrawable(R.drawable.robot);
+
+        Drawable upImage = this.getResources().getDrawable(R.drawable.up);
+        Drawable downImage = this.getResources().getDrawable(R.drawable.down);
+        Drawable leftImage = this.getResources().getDrawable(R.drawable.left);
+        Drawable rightImage = this.getResources().getDrawable(R.drawable.right);
+
+        for (int y = 0; y < 300; y++) {
+            TextView t = findViewById(y);
+            t.setText(String.valueOf(y));
+            if (!waypointList.contains(y)) {
+                if (y == topLeftCorner || y == topLeftCorner + 1 || y == topLeftCorner + 2 || y == topLeftCorner + 15 || y == topLeftCorner + 16 || y == topLeftCorner + 17
+                        || y == topLeftCorner + 30 || y == topLeftCorner + 31 || y == topLeftCorner + 32) {
+
+                    if (y == topLeftCorner + 16) {
+                        t.setText("");
+                        switch (currentDirection) {
+                            case "up":
+                                t.setBackground(upImage);
+                                break;
+                            case "down":
+                                t.setBackground(downImage);
+                                break;
+                            case "left":
+                                t.setBackground(leftImage);
+                                break;
+                            case "right":
+                                t.setBackground(rightImage);
+                                break;
+
+                        }
+                    } else {
+                        t.setBackground(robot);
+                        t.setText("1");
+                        t.setTextColor(Color.parseColor("#FF0000"));
+                    }
+
+                } else
+                    t.setBackground(box);
+            }
+
+
+        }
+
+    }
 
 }

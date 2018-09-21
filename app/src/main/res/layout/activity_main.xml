@@ -93,14 +93,6 @@
                         android:textColor="#000066"
                         android:textSize="15dp" />
 
-                    <Button
-                        android:id="@+id/setStartBTN"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:text="Set Start"
-                        android:layout_below="@+id/startYText" />
 
 
                 </RelativeLayout>
@@ -163,14 +155,6 @@
                         android:textColor="#000066"
                         android:textSize="15dp" />
 
-                    <Button
-                        android:id="@+id/setWaypointBTN"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:text="Set Waypoint"
-                        android:layout_below="@+id/waypointYText" />
 
 
                 </RelativeLayout>
