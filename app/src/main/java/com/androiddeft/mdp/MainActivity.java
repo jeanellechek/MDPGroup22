@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Map
     private GridView gridView;
-    int topLeftCorner;
+    int topLeftCorner = 255;
 
 
     //Timer
@@ -76,23 +76,29 @@ public class MainActivity extends AppCompatActivity {
         Drawable box = this.getResources().getDrawable(R.drawable.box);
         Drawable robot = this.getResources().getDrawable(R.drawable.robot);
         Drawable upDirection = this.getResources().getDrawable(R.drawable.up);
+        Drawable endpoint = this.getResources().getDrawable(R.drawable.endpoint);
         final Drawable waypoint = this.getResources().getDrawable(R.drawable.waypoint);
 
         for (int x = 0; x < foreground.getColumnCount() * foreground.getRowCount(); x++) {
             boxID = new TextView(this);
             boxID.setBackground(box);
             boxID.setId(x);
-            boxID.setText(String.valueOf(x));
+            //   boxID.setText(String.valueOf(x));
             boxID.setTextColor(Color.parseColor("#FF0000"));
             boxID.setGravity(Gravity.CENTER);
 
             boxID.setOnLongClickListener(new View.OnLongClickListener() {
                 public boolean onLongClick(View view) {
                     topLeftCorner = view.getId();
-                    if (topLeftCorner >= 150)
+                    if (topLeftCorner >= 150) {
                         robotStart();
-                    Toast.makeText(getApplicationContext(), "Long Clicked ",
-                            Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Start coordinates selected. ",
+                                Toast.LENGTH_SHORT).show();
+                    } else
+                        Toast.makeText(getApplicationContext(), "Starting coordinates must be before row 10.",
+                                Toast.LENGTH_SHORT).show();
+
+
                     return true;    // <- set to true
                 }
             });
@@ -115,6 +121,8 @@ public class MainActivity extends AppCompatActivity {
 
                         waypointXValue.setText(String.valueOf(xCoord));
                         waypointYValue.setText(String.valueOf(yCoord));
+                        Toast.makeText(getApplicationContext(), "Waypoint coordinates selected. ",
+                                Toast.LENGTH_SHORT).show();
                     }
                     waypointList.add(point);
 
@@ -136,6 +144,9 @@ public class MainActivity extends AppCompatActivity {
                     boxID.setTextColor(Color.parseColor("#FF0000"));
                 }
             }
+            if (x == 12 || x == 13 || x == 14 || x == 27 || x == 28 || x == 29 || x == 42 || x == 43 || x == 44)
+                boxID.setBackground(endpoint);
+
 
         }
 
@@ -385,6 +396,7 @@ public class MainActivity extends AppCompatActivity {
     public void robotMovement() {
         Drawable box = this.getResources().getDrawable(R.drawable.box);
         Drawable robot = this.getResources().getDrawable(R.drawable.robot);
+        Drawable endpoint = this.getResources().getDrawable(R.drawable.endpoint);
 
         Drawable upImage = this.getResources().getDrawable(R.drawable.up);
         Drawable downImage = this.getResources().getDrawable(R.drawable.down);
@@ -447,8 +459,11 @@ public class MainActivity extends AppCompatActivity {
                         t.setTextColor(Color.parseColor("#FF0000"));
                     }
 
-                } else
+                } else if (y == 12 || y == 13 || y == 14 || y == 27 || y == 28 || y == 29 || y == 42 || y == 43 || y == 44)
+                    boxID.setBackground(endpoint);
+                else
                     t.setBackground(box);
+
             }
 
 
@@ -465,6 +480,7 @@ public class MainActivity extends AppCompatActivity {
             topLeftCorner -= 30;
         else if ((19 - ((topLeftCorner - (topLeftCorner % 15)) / 15)) == 1)
             topLeftCorner -= 15;
+
         //right
         if ((topLeftCorner % 15) == 13)
             topLeftCorner -= 1;
@@ -479,6 +495,7 @@ public class MainActivity extends AppCompatActivity {
 
         Drawable box = this.getResources().getDrawable(R.drawable.box);
         Drawable robot = this.getResources().getDrawable(R.drawable.robot);
+        Drawable endpoint = this.getResources().getDrawable(R.drawable.endpoint);
 
         Drawable upImage = this.getResources().getDrawable(R.drawable.up);
         Drawable downImage = this.getResources().getDrawable(R.drawable.down);
@@ -487,7 +504,7 @@ public class MainActivity extends AppCompatActivity {
 
         for (int y = 0; y < 300; y++) {
             TextView t = findViewById(y);
-            t.setText(String.valueOf(y));
+            //    t.setText(String.valueOf(y));
             if (!waypointList.contains(y)) {
                 if (y == topLeftCorner || y == topLeftCorner + 1 || y == topLeftCorner + 2 || y == topLeftCorner + 15 || y == topLeftCorner + 16 || y == topLeftCorner + 17
                         || y == topLeftCorner + 30 || y == topLeftCorner + 31 || y == topLeftCorner + 32) {
@@ -515,8 +532,13 @@ public class MainActivity extends AppCompatActivity {
                         t.setTextColor(Color.parseColor("#FF0000"));
                     }
 
-                } else
+                } else if (y == 12 || y == 13 || y == 14 || y == 27 || y == 28 || y == 29 || y == 42 || y == 43 || y == 44)
+                    boxID.setBackground(endpoint);
+                else {
+                    t.setText("");
                     t.setBackground(box);
+
+                }
             }
 
 
