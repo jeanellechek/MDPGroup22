@@ -1,35 +1,37 @@
 package com.androiddeft.mdp;
 
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.GridView;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.androiddeft.mdp.fragments.bluetooth.BluetoothChatFragment;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-
     //Map
     private GridView gridView;
     int topLeftCorner = 255;
-
 
     //Timer
     Button start, stop, auto, manual, configButton, bluetoothButton, up, down, left, right;
@@ -60,17 +62,25 @@ public class MainActivity extends AppCompatActivity {
     String currentDirection = "up";
     TextView movementTextView;
 
+    BluetoothAdapter myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    public static final int REQUEST_CONNECT_DEVICE_SECURE = 6;
+
+
+    private Context mContext;
+    private Activity mActivity;
+    private PopupWindow mPopupWindow;
+    private RelativeLayout mRelativeLayout;
+    Runnable runnable = new Runnable() {
+        public void run() {
+            finish();
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        //Display the MAIN FRAGMENT
-        Fragment fragment = new BluetoothChatFragment();
-        displaySelectedFragment(fragment);
 
         GridLayout foreground = findViewById(R.id.gridMapLayout);
         Drawable box = this.getResources().getDrawable(R.drawable.box);
@@ -251,43 +261,133 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        this.registerReceiver(mBroadcastReceiver, filter);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_option_menu, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
         return true;
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        switch (item.getItemId()) {
-            //for reconfiguring string commands - command 1 and command 2 (Task C8)
-            case R.id.reconString: {
-                Intent reconStringIntent = new Intent(this, ConfigurableCommActivity.class);
-                startActivityForResult(reconStringIntent, REQUEST_RECONFIGURE_STRING);
-                return true;
-            }
-            //add other cases here - always start activity for result
 
+        super.onOptionsItemSelected(item);
+
+        switch (item.getItemId()) {
+            case R.id.bluetooth:
+                BluetoothOn();
+                Intent serverIntent = new Intent(this, DeviceListActivity.class);
+                startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
+                break;
+            case R.id.discoverable:
+                BluetoothDiscoverable();
+                break;
         }
-        return super.onOptionsItemSelected(item);
+        return true;
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // If BT is not on, request that it be enabled.
+        // setupChat() will then be called during onActivityResult
+        BluetoothOn();
     }
 
     /**
-     * Loads the specified fragment to the frame
-     *
-     * @param fragment
+     * The BroadcastReceiver that listens for discovered devices and changes the title when
+     * discovery is finished
      */
-    private void displaySelectedFragment(Fragment fragment) {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.frame, fragment);
-        fragmentTransaction.commit();
+    protected final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            // When discovery finds a device
+            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
+                switch (state) {
+                    case BluetoothAdapter.STATE_ON:
+                        Toast.makeText(getApplicationContext(), "Bluetooth is on", Toast.LENGTH_LONG).show();
+                        break;
+                    case BluetoothAdapter.STATE_TURNING_ON:
+                        Toast.makeText(getApplicationContext(), "Bluetooth is turning on", Toast.LENGTH_LONG).show();
+                        break;
+                    case BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE:
+                        Toast.makeText(getApplicationContext(), "Bluetooth is visible to other devices  ", Toast.LENGTH_LONG).show();
+                        break;
+                }
+
+
+            }
+            if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
+
+                //rl_msg.setVisibility(View.VISIBLE);
+                //listmsg.setText("HI");
+
+            } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
+
+            }
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mBroadcastReceiver);
+    }
+
+    protected void BluetoothOn() {
+        if (myBluetoothAdapter == null) {
+            Toast.makeText(getApplicationContext(), "Bluetooth does not support on this device", Toast.LENGTH_LONG).show();
+        } else {
+            if (!myBluetoothAdapter.isEnabled()) {
+                Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivity(enableBluetoothIntent);
+
+                IntentFilter intentFilter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+                registerReceiver(mBroadcastReceiver, intentFilter);
+                //startActivityForResult(btEnablingIntent, REQUEST_ENABLE_BLUETOOTH);
+            }
+        }
+    }
+
+    protected void BluetoothDiscoverable() {
+        if (!myBluetoothAdapter.isEnabled()) {
+            BluetoothOn();
+        }
+        Toast.makeText(getApplicationContext(), "Making device discoverable for 300 seconds.", Toast.LENGTH_LONG).show();
+        Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+        startActivity(discoverableIntent);
+
+        IntentFilter intentFilter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mBroadcastReceiver, intentFilter);
+    }
+
+    private void connectDevice(Intent data, boolean secure) {
+        String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+        BluetoothDevice device = myBluetoothAdapter.getRemoteDevice(address);
+
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CONNECT_DEVICE_SECURE:
+                // When DeviceListActivity returns with a device to connect
+                if (resultCode == Activity.RESULT_OK) {
+                    connectDevice(data, true);
+                }
+                break;
+        }
     }
 
     private Runnable updateTimerThread = new Runnable() {
