@@ -13,4 +13,9 @@
         <!--<item name="android:focusableInTouchMode">true</item>-->
     </style>
 
+    <style name="AppTheme.CustomTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="windowNoTitle">true</item>`
+    </style>
 </resources>

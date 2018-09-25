@@ -7,16 +7,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
@@ -25,7 +29,11 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.LayoutInflater;
+import android.widget.LinearLayout;
+import android.widget.GridLayout.*;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -75,7 +83,10 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
     };
+    private Button mButton;
 
+    //send string
+    BluetoothConnectionService mBluetoothConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -222,8 +233,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                robotMovement();
 
+                robotMovement();
+                sendMessage("up");
             }
         });
 
@@ -268,6 +280,12 @@ public class MainActivity extends AppCompatActivity {
         this.registerReceiver(mBroadcastReceiver, filter);
     }
 
+    private void sendMessage(String messageToSend) {
+        Intent messaging_intent = new Intent("outMsg");
+        messaging_intent.putExtra("outgoingmsg", messageToSend);
+        LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -288,8 +306,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
                 break;
             case R.id.discoverable:
+                mBluetoothConnection = new BluetoothConnectionService(MainActivity.this);
                 BluetoothDiscoverable();
                 break;
+
+            case R.id.command:
+                startActivity(new Intent(this, commandActivity.class));
+                break;
+
         }
         return true;
     }
@@ -319,6 +343,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Bluetooth is on", Toast.LENGTH_LONG).show();
                         break;
                     case BluetoothAdapter.STATE_TURNING_ON:
+                        Toast.makeText(getApplicationContext(), "Bluetooth is turning on", Toast.LENGTH_LONG).show();
                         Toast.makeText(getApplicationContext(), "Bluetooth is turning on", Toast.LENGTH_LONG).show();
                         break;
                     case BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE:
@@ -645,5 +670,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
 
 }

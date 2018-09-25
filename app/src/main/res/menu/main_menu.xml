@@ -11,5 +11,10 @@
         android:title="Connect to device"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/command"
+        android:title="Configure command"
+        app:showAsAction="never" />
+
 
 </menu>

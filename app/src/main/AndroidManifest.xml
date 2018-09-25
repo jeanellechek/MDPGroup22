@@ -29,6 +29,10 @@
         android:label="@string/select_device"
         android:theme="@style/Theme.Holo.Dialog.Popup" />
 
+    <activity
+        android:name=".commandActivity"
+        android:theme="@style/AppTheme.CustomTheme"></activity>
+
   </application>
 
 </manifest>

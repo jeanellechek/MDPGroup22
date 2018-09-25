@@ -93,46 +93,6 @@ public class DeviceListActivity extends Activity {
         mBluetoothConnection.startClient(device, uuid);
     }
 
-    //    protected AlertDialog.Builder popup() {
-//        View v = inflater.inflate(R.layout.activity_msg, null);
-//        bt_lv_device = v.findViewById(R.id.bt_lv_devices);
-//        bt_lv_device.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//
-//                if (bt_adapter.isDiscovering()) bt_adapter.cancelDiscovery();
-//                if (bt_display_isfind) {
-//                    bt_newlist.get(position).createBond();
-//                } else {
-//                    bt_device = bt_pairedlist.get(position);
-//                    bt_checkpaired();
-//                }
-//            }
-//        });
-////        v.findViewById(R.id.bt_btn_find).setOnClickListener(new View.OnClickListener() {
-////            @Override
-////            public void onClick(View v) {
-////                if (bt_adapter.isDiscovering()) bt_adapter.cancelDiscovery();
-////                bt_display_isfind = true;
-////
-////                bt_adapter.startDiscovery();
-////                bt_newlist.clear();
-////                bt_listview(v.getContext(), bt_newlist);
-////                new_message(v.getContext(), "Find New Devices...");
-////            }
-////        });
-////        v.findViewById(R.id.bt_btn_paired).setOnClickListener(new View.OnClickListener() {
-////            @Override
-////            public void onClick(View v) {
-////                if (bt_adapter.isDiscovering()) bt_adapter.cancelDiscovery();
-////                bt_display_isfind = false;
-////
-////                bt_getpaired();
-////                bt_listview(v.getContext(), bt_pairedlist);
-////            }
-////        });
-//        return new AlertDialog.Builder(this).setView(v);
-//    }
     private void getNewDevice() {
         NewDevicesArrayAdapter.clear();
         NewDevicesArrayAdapter.notifyDataSetChanged();
@@ -247,50 +207,14 @@ public class DeviceListActivity extends Activity {
                 Log.d(TAG, "Device Address = " + btDevice.getAddress());
                 mBluetoothConnection = new BluetoothConnectionService(DeviceListActivity.this);
                 startConnection();
-//                getPairedDevices();
-//                getNewDevice();
-//                String info = ((TextView) v).getText().toString();
-//                String address = info.substring(info.length() - 17);
-//                Intent intent = new Intent();
-//                intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
-//                setResult(Activity.RESULT_OK, intent);
                 finish();
-                //listmsg.setVisibility(View.VISIBLE);
             } catch (Exception e) {
                 e.printStackTrace();
-            }//connect(bdDevice);
-            // Set result and finish this Activity
+            }
 
         }
     };
-//    private void connectToDevice(String deviceAddress) {
-//        myBluetoothAdapter.cancelDiscovery();
-//        BluetoothDevice device = myBluetoothAdapter.getRemoteDevice(deviceAddress);
-//        //bluetoothService.connect(device);
-//    }
-//    public boolean removeBond(BluetoothDevice btDevice)
-//            throws Exception
-//    {
-//        Class btClass = Class.forName("android.bluetooth.BluetoothDevice");
-//        Method removeBondMethod = btClass.getMethod("removeBond");
-//        Boolean returnValue = (Boolean) removeBondMethod.invoke(btDevice);
-//        return returnValue.booleanValue();
-//    }
 
-
-//    public boolean createBond(BluetoothDevice btDevice)
-//            throws Exception
-//    {
-//        Class class1 = Class.forName("android.bluetooth.BluetoothDevice");
-//        Method createBondMethod = class1.getMethod("createBond");
-//        Boolean returnValue = (Boolean) createBondMethod.invoke(btDevice);
-//        sleep(5000);
-//        if(btDevice.getBondState() == BluetoothDevice.BOND_BONDED){
-//            return returnValue.booleanValue();
-//        }
-//        else
-//            return false;
-//    }
     /**
      * The BroadcastReceiver that listens for discovered devices and changes the title when
      * discovery is finished
@@ -359,35 +283,9 @@ public class DeviceListActivity extends Activity {
     private final BroadcastReceiver mBroadcastReceiver3 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String outgoingmsg = intent.getStringExtra("theOutMessage");
+            String outgoingmsg = intent.getStringExtra("outgoingmsg");
             byte[] bytes = outgoingmsg.getBytes(Charset.defaultCharset());
             mBluetoothConnection.write(bytes);
-
-            //msg_chatlist.add(new Message(text, getResources()));
-//            listmsg(getApplicationContext());
-//
-//            msg_instruction(false, enum_getinstruction(text));
         }
     };
 }
-/**
- * This method is required for all devices running API23+
- * Android must programmatically check the permissions for bluetooth. Putting the proper permissions
- * in the manifest is not enough.
- * <p>
- * NOTE: This will only execute on versions > LOLLIPOP because it is not needed otherwise.
- */
-//    private void checkBTPermissions() {
-//        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP){
-//            int permissionCheck = this.checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
-//            permissionCheck += this.checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION");
-//            if (permissionCheck != 0) {
-//
-//                this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1001); //Any number
-//            }
-//        }else{
-//            Log.d(TAG, "checkBTPermissions: No need to check permissions. SDK version < LOLLIPOP.");
-//        }
-//    }
-
-//}

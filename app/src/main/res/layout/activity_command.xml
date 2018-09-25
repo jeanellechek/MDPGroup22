@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
+
+            <TextView
+                android:id="@+id/configureLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Configure Command"
+                android:textColor="#000066"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/function1Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/configureLabel"
+                android:layout_marginTop="10dp"
+                android:text="Function 1: " />
+
+            <EditText
+                android:id="@+id/txtFunction1"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/function1Label"
+                android:inputType="text"
+                android:text="function 1" />
+
+            <Button
+                android:id="@+id/function1BTN"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtFunction1"
+                android:text="Save" />
+
+            <TextView
+                android:id="@+id/function2Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/function1BTN"
+                android:layout_marginTop="30dp"
+                android:text="Function 2: " />
+
+            <EditText
+                android:id="@+id/txtFunction2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/function2Label"
+                android:inputType="text"
+                android:text="function 2" />
+
+            <Button
+                android:id="@+id/function2BTN"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtFunction2"
+                android:text="Save" />
+
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+</android.support.constraint.ConstraintLayout>
