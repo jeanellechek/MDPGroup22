@@ -283,7 +283,7 @@
 
             <RelativeLayout
                 android:id="@+id/directionsLayout"
-                android:layout_width="250dp"
+                android:layout_width="200dp"
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"
                 android:orientation="horizontal">
@@ -326,7 +326,7 @@
 
             <RelativeLayout
                 android:id="@+id/controlsLayout"
-                android:layout_width="250dp"
+                android:layout_width="380dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:layout_margin="5dp"
@@ -336,31 +336,57 @@
                     android:id="@+id/movementTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="240dp"
                     android:layout_marginTop="10dp"
                     android:text="Ready"
                     android:textColor="#FFFFFF"
                     android:textSize="20dp" />
 
-
+                <RelativeLayout
+                    android:id="@+id/modeLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/movementTextView">
 
                 <Button
                     android:id="@+id/autoButton"
-                    android:layout_width="match_parent"
+                    android:layout_width="250dp"
                     android:layout_height="45dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@+id/movementTextView"
+                    android:layout_marginLeft="150dp"
                     android:text="Auto" />
 
                 <Button
                     android:id="@+id/manualButton"
-                    android:layout_width="match_parent"
+                    android:layout_width="250dp"
                     android:layout_height="45dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@+id/movementTextView"
+                    android:layout_marginLeft="150dp"
                     android:text="Manual"
                     android:visibility="invisible" />
+                </RelativeLayout>
 
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/messageValue"
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="50dp"
+                        android:layout_marginTop="100dp"
+                        android:textColor="#ffffff"
+                        android:inputType="text"
+                        android:text="Enter message" />
+
+                    <Button
+                        android:id="@+id/sendButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="100dp"
+                        android:layout_toRightOf="@+id/messageValue"
+                        android:text="Send" />
+                </RelativeLayout>
 
             </RelativeLayout>
 

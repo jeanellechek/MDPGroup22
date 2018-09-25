@@ -20,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.PopupWindow;
@@ -33,7 +34,8 @@ public class MainActivity extends AppCompatActivity {
     int topLeftCorner = 255;
 
     //Timer
-    Button start, stop, auto, manual, configButton, bluetoothButton, up, down, left, right;
+    Button start, stop, auto, manual, configButton, bluetoothButton, up, down, left, right, sendButton;
+    EditText messageValue;
     TextView time, boxID;
     private long startTime = 0L;
 
@@ -81,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
     //receive string
     String incomingMessage = null;
+    boolean selectedWaypoint = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         GridLayout foreground = findViewById(R.id.gridMapLayout);
-        Drawable box = this.getResources().getDrawable(R.drawable.box);
+        final Drawable box = this.getResources().getDrawable(R.drawable.box);
         Drawable robot = this.getResources().getDrawable(R.drawable.robot);
         Drawable upDirection = this.getResources().getDrawable(R.drawable.up);
         Drawable endpoint = this.getResources().getDrawable(R.drawable.endpoint);
@@ -121,31 +124,58 @@ public class MainActivity extends AppCompatActivity {
             boxID.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //get the id of the selected box
-                    int point = view.getId();
-                    waypointXValue = findViewById(R.id.waypointXValue);
-                    waypointYValue = findViewById(R.id.waypointYValue);
+                    if (selectedWaypoint == false) {
+                        //get the id of the selected box
+                        int point = view.getId();
+                        waypointXValue = findViewById(R.id.waypointXValue);
+                        waypointYValue = findViewById(R.id.waypointYValue);
 
-                    if (!(point == topLeftCorner || point == topLeftCorner + 1 || point == topLeftCorner + 2 || point == topLeftCorner + 15 || point == topLeftCorner + 16 || point == topLeftCorner + 17
-                            || point == topLeftCorner + 30 || point == topLeftCorner + 31 || point == topLeftCorner + 32)) {
-                        TextView tq = findViewById(point);
-                        tq.setBackground(waypoint);
-                        tq.setText("W");
+                        if (!(point == topLeftCorner || point == topLeftCorner + 1 || point == topLeftCorner + 2 || point == topLeftCorner + 15 || point == topLeftCorner + 16 || point == topLeftCorner + 17
+                                || point == topLeftCorner + 30 || point == topLeftCorner + 31 || point == topLeftCorner + 32)) {
+                            TextView tq = findViewById(point);
+                            tq.setBackground(waypoint);
+                            tq.setText("W");
 
-                        int xCoord = point % 15;
-                        int yCoord = 19 - ((point - xCoord) / 15);
+                            int xCoord = point % 15;
+                            int yCoord = 19 - ((point - xCoord) / 15);
 
-                        waypointXValue.setText(String.valueOf(xCoord));
-                        waypointYValue.setText(String.valueOf(yCoord));
-                        Toast.makeText(getApplicationContext(), "Waypoint coordinates selected. ",
-                                Toast.LENGTH_SHORT).show();
+                            waypointXValue.setText(String.valueOf(xCoord));
+                            waypointYValue.setText(String.valueOf(yCoord));
+                            Toast.makeText(getApplicationContext(), "Waypoint coordinates selected. ",
+                                    Toast.LENGTH_SHORT).show();
 
-                        Intent messaging_intent = new Intent("outMsg");
-                        messaging_intent.putExtra("outgoingmsg", "W(" + waypointXValue.getText().toString() + "," + waypointYValue.getText().toString() + ")");
-                        LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
+                            Intent messaging_intent = new Intent("outMsg");
+                            messaging_intent.putExtra("outgoingmsg", "W(" + waypointXValue.getText().toString() + "," + waypointYValue.getText().toString() + ")");
+                            LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
 
+                        }
+                        waypointList = point;
+                        selectedWaypoint = true;
+                    } else if (selectedWaypoint == true && waypointList == view.getId()) {
+                        //remove waypoint
+                        TextView oldPoint = findViewById(waypointList);
+                        oldPoint.setBackground(box);
+                        oldPoint.setText("");
+
+                        waypointList = 0;
+                        selectedWaypoint = false;
+                        Toast.makeText(getApplicationContext(), "Waypoint coordinates removed.", Toast.LENGTH_LONG).show();
+                    } else {
+                        //change waypoint
+                        TextView oldPoint = findViewById(waypointList);
+                        oldPoint.setBackground(box);
+                        oldPoint.setText("");
+
+                        TextView newPoint = findViewById(view.getId());
+                        newPoint.setBackground(waypoint);
+                        newPoint.setText("W");
+
+                        waypointList = view.getId();
+                        selectedWaypoint = true;
+                        Toast.makeText(getApplicationContext(), "Waypoint coordinates changed.", Toast.LENGTH_LONG).show();
                     }
-                    waypointList = point;
+
+
 
                 }
             });
@@ -288,6 +318,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        sendButton = findViewById(R.id.sendButton);
+        messageValue = findViewById(R.id.messageValue);
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                Intent messaging_intent = new Intent("outMsg");
+                messaging_intent.putExtra("outgoingmsg", messageValue.getText().toString());
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
+
+            }
+        });
+
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
@@ -303,10 +348,31 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             incomingMessage = intent.getStringExtra("incomingmsg");
+
+
             if (incomingMessage.equals("down") || incomingMessage.equals("right") || incomingMessage.equals("left"))
                 robotRotate(incomingMessage);
             else if (incomingMessage.equals("up"))
                 robotMovement();
+            else if (incomingMessage.equals("stop"))
+                movementTextView.setText("Stopped");
+//            else {
+//                String startCoord = "(.*)(^S\\(1?[0-9],1?[0-9]\\)$)(.*)";
+//                Pattern startPattern = Pattern.compile(startCoord);
+//                Matcher sp = startPattern.matcher(incomingMessage);
+//
+//                String waypointCoord = "(.*)(^W\\(1?[0-9],1?[0-9]\\)$)(.*)";
+//                Pattern waypointPattern = Pattern.compile(waypointCoord);
+//                Matcher wp = waypointPattern.matcher(incomingMessage);
+//
+//
+//                if (sp.find()) //eg: S(5,2) no spacing
+//                    Toast.makeText(getApplicationContext(), "Start coordinates Matched.", Toast.LENGTH_LONG).show();
+//                else if(wp.find()) //eg: W(5,2) no spacing
+//                    Toast.makeText(getApplicationContext(), "Waypoint coordinates Matched.", Toast.LENGTH_LONG).show();
+//                else
+//                    Toast.makeText(getApplicationContext(), "Fail to match.", Toast.LENGTH_LONG).show();
+//            }
         }
     };
 
@@ -644,7 +710,7 @@ public class MainActivity extends AppCompatActivity {
         startYValue.setText(String.valueOf(yCoord));
 
         Intent messaging_intent = new Intent("outMsg");
-        messaging_intent.putExtra("outgoingmsg", "s(" + startXValue.getText().toString() + "," + startYValue.getText().toString() + ")");
+        messaging_intent.putExtra("outgoingmsg", "S(" + startXValue.getText().toString() + "," + startYValue.getText().toString() + ")");
         LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
 
         Drawable box = this.getResources().getDrawable(R.drawable.box);
