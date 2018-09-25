@@ -23,6 +23,7 @@ public class BluetoothConnectionService {
     private static final String appName = "Bluetooth Communication";
     private final BluetoothAdapter myBluetoothAdapter;
     Context context;
+    Context mContext;
 
     private String devicename = "";
 
@@ -222,12 +223,11 @@ public class BluetoothConnectionService {
                     String incomingMessage = new String(buffer, 0, bytes);
                     Log.d(TAG, "InputStream: " + incomingMessage);
 
-//                    Intent incomingMessageIntent = new Intent("incomingMessage");
-//                    incomingMessageIntent.putExtra("theMessage", incomingMessage);
 
-                    Intent messaging_intent = new Intent("messaging");
-                    messaging_intent.putExtra("theMessage", incomingMessage);
-                    LocalBroadcastManager.getInstance(context).sendBroadcast(messaging_intent);
+                    Intent messaging_intent = new Intent("inMsg");
+                    messaging_intent.putExtra("incomingmsg", incomingMessage);
+                    LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
+
                 } catch (IOException e) {
                     Log.e(TAG, "write: Error reading Input Stream. " + e.getMessage());
                     break;

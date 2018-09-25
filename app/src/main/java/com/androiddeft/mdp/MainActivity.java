@@ -79,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
     //send string
     BluetoothConnectionService mBluetoothConnection;
 
+    //receive string
+    String incomingMessage = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -291,8 +294,21 @@ public class MainActivity extends AppCompatActivity {
         filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
         filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         this.registerReceiver(mBroadcastReceiver, filter);
+
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver2, new IntentFilter("inMsg"));
     }
 
+    private final BroadcastReceiver mBroadcastReceiver2 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            incomingMessage = intent.getStringExtra("incomingmsg");
+            if (incomingMessage.equals("down") || incomingMessage.equals("right") || incomingMessage.equals("left"))
+                robotRotate(incomingMessage);
+            else if (incomingMessage.equals("up"))
+                robotMovement();
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
