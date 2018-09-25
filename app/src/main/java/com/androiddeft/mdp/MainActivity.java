@@ -7,10 +7,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -20,7 +18,6 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
@@ -29,12 +26,6 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.view.LayoutInflater;
-import android.widget.LinearLayout;
-import android.widget.GridLayout.*;
-
-import java.nio.charset.Charset;
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     //Map
@@ -60,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_RECONFIGURE_STRING = 1;
 
     //for waypoint
-    ArrayList<Integer> waypointList = new ArrayList<Integer>();
+    int waypointList;
     TextView waypointXValue, waypointYValue;
 
     //for startpoint
@@ -115,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
                         robotStart();
                         Toast.makeText(getApplicationContext(), "Start coordinates selected. ",
                                 Toast.LENGTH_SHORT).show();
+
                     } else
                         Toast.makeText(getApplicationContext(), "Starting coordinates must be before row 10.",
                                 Toast.LENGTH_SHORT).show();
@@ -144,8 +136,13 @@ public class MainActivity extends AppCompatActivity {
                         waypointYValue.setText(String.valueOf(yCoord));
                         Toast.makeText(getApplicationContext(), "Waypoint coordinates selected. ",
                                 Toast.LENGTH_SHORT).show();
+
+                        Intent messaging_intent = new Intent("outMsg");
+                        messaging_intent.putExtra("outgoingmsg", "W(" + waypointXValue.getText().toString() + "," + waypointYValue.getText().toString() + ")");
+                        LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
+
                     }
-                    waypointList.add(point);
+                    waypointList = point;
 
                 }
             });
@@ -235,7 +232,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 robotMovement();
-                sendMessage("up");
+                Intent messaging_intent = new Intent("outMsg");
+                messaging_intent.putExtra("outgoingmsg", "up");
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
             }
         });
 
@@ -245,7 +244,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+
                 robotRotate("down");
+
+                Intent messaging_intent = new Intent("outMsg");
+                messaging_intent.putExtra("outgoingmsg", "down");
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
 
             }
         });
@@ -256,7 +260,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+
                 robotRotate("left");
+
+                Intent messaging_intent = new Intent("outMsg");
+                messaging_intent.putExtra("outgoingmsg", "left");
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
 
             }
         });
@@ -269,6 +278,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 robotRotate("right");
 
+                Intent messaging_intent = new Intent("outMsg");
+                messaging_intent.putExtra("outgoingmsg", "right");
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
+
             }
         });
 
@@ -280,11 +293,6 @@ public class MainActivity extends AppCompatActivity {
         this.registerReceiver(mBroadcastReceiver, filter);
     }
 
-    private void sendMessage(String messageToSend) {
-        Intent messaging_intent = new Intent("outMsg");
-        messaging_intent.putExtra("outgoingmsg", messageToSend);
-        LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -451,7 +459,7 @@ public class MainActivity extends AppCompatActivity {
 
         for (int y = 0; y < 300; y++) {
             TextView t = findViewById(y);
-            if (!waypointList.contains(y)) {
+            if (waypointList != y) {
                 if (y == topLeftCorner || y == topLeftCorner + 1 || y == topLeftCorner + 2 || y == topLeftCorner + 15 || y == topLeftCorner + 16 || y == topLeftCorner + 17
                         || y == topLeftCorner + 30 || y == topLeftCorner + 31 || y == topLeftCorner + 32) {
                     if (y == topLeftCorner + 16) {
@@ -557,7 +565,7 @@ public class MainActivity extends AppCompatActivity {
 
         for (int y = 0; y < 300; y++) {
             TextView t = findViewById(y);
-            if (!waypointList.contains(y)) {
+            if (waypointList != y) {
                 if (y == topLeftCorner || y == topLeftCorner + 1 || y == topLeftCorner + 2 || y == topLeftCorner + 15 || y == topLeftCorner + 16 || y == topLeftCorner + 17
                         || y == topLeftCorner + 30 || y == topLeftCorner + 31 || y == topLeftCorner + 32) {
                     //if (topLeftCorner + y < topLeftCorner + 3)
@@ -600,6 +608,7 @@ public class MainActivity extends AppCompatActivity {
         startXValue = findViewById(R.id.startXValue);
         startYValue = findViewById(R.id.startYValue);
 
+
         //bottom
         if ((19 - ((topLeftCorner - (topLeftCorner % 15)) / 15)) == 0)
             topLeftCorner -= 30;
@@ -618,6 +627,10 @@ public class MainActivity extends AppCompatActivity {
         startXValue.setText(String.valueOf(xCoord));
         startYValue.setText(String.valueOf(yCoord));
 
+        Intent messaging_intent = new Intent("outMsg");
+        messaging_intent.putExtra("outgoingmsg", "s(" + startXValue.getText().toString() + "," + startYValue.getText().toString() + ")");
+        LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
+
         Drawable box = this.getResources().getDrawable(R.drawable.box);
         Drawable robot = this.getResources().getDrawable(R.drawable.robot);
         Drawable endpoint = this.getResources().getDrawable(R.drawable.endpoint);
@@ -630,7 +643,7 @@ public class MainActivity extends AppCompatActivity {
         for (int y = 0; y < 300; y++) {
             TextView t = findViewById(y);
             //    t.setText(String.valueOf(y));
-            if (!waypointList.contains(y)) {
+            if (waypointList != y) {
                 if (y == topLeftCorner || y == topLeftCorner + 1 || y == topLeftCorner + 2 || y == topLeftCorner + 15 || y == topLeftCorner + 16 || y == topLeftCorner + 17
                         || y == topLeftCorner + 30 || y == topLeftCorner + 31 || y == topLeftCorner + 32) {
 

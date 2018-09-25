@@ -1,8 +1,10 @@
 package com.androiddeft.mdp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -14,6 +16,7 @@ public class commandActivity extends AppCompatActivity {
     EditText txtFunction1, txtFunction2;
     SharedPreferences sharedPreferences;
 
+    private Context mContext;
     public static final String MY_PREFERENCE = "MyPref";
     public static final String FUNCTION_1 = "function1String";
     public static final String FUNCTION_2 = "function2String";
@@ -41,6 +44,10 @@ public class commandActivity extends AppCompatActivity {
                 editor.putString(FUNCTION_1, txtFunction1.getText().toString());
                 editor.commit();
                 commandActivity.this.finish();
+
+                Intent messaging_intent = new Intent("outMsg");
+                messaging_intent.putExtra("outgoingmsg", txtFunction1.getText().toString());
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
             }
         });
 
@@ -51,6 +58,10 @@ public class commandActivity extends AppCompatActivity {
                 editor.putString(FUNCTION_2, txtFunction2.getText().toString());
                 editor.commit();
                 commandActivity.this.finish();
+
+                Intent messaging_intent = new Intent("outMsg");
+                messaging_intent.putExtra("outgoingmsg", txtFunction2.getText().toString());
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
             }
         });
 
