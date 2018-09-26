@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,6 +67,15 @@ public class MainActivity extends AppCompatActivity {
     String currentDirection = "up";
     TextView movementTextView;
 
+    //for obstacles
+    ArrayList<Integer> obstacleList = new ArrayList<Integer>();
+
+    String startingX = null;
+    String startingY = null;
+    String waypointX = null;
+    String waypointY = null;
+    int obstacleCount = 0;
+
     BluetoothAdapter myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     public static final int REQUEST_CONNECT_DEVICE_SECURE = 6;
 
@@ -88,6 +98,9 @@ public class MainActivity extends AppCompatActivity {
     String incomingMessage = null;
     boolean selectedWaypoint = false;
 
+    //obstacles
+    int receivedCoordinates = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
             boxID = new TextView(this);
             boxID.setBackground(box);
             boxID.setId(x);
-            //   boxID.setText(String.valueOf(x));
+            //boxID.setText(String.valueOf(x));
             boxID.setTextColor(Color.parseColor("#FF0000"));
             boxID.setGravity(Gravity.CENTER);
 
@@ -349,13 +362,10 @@ public class MainActivity extends AppCompatActivity {
     private final BroadcastReceiver mBroadcastReceiver2 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            incomingMessage = intent.getStringExtra("incomingmsg");
             String obstacleX = null;
             String obstacleY = null;
-            String startingX = null;
-            String startingY = null;
-            String waypointX = null;
-            String waypointY = null;
+            String obstacleArrow = null;
+            incomingMessage = intent.getStringExtra("incomingmsg");
 
             if (incomingMessage.equals("down") || incomingMessage.equals("right") || incomingMessage.equals("left"))
                 robotRotate(incomingMessage);
@@ -364,17 +374,39 @@ public class MainActivity extends AppCompatActivity {
             else if (incomingMessage.equals("stop"))
                 movementTextView.setText("Stopped");
             else {
-                //compare and ensure that it is O(x,y)
-                Matcher matcher = Pattern.compile("[0-9]+").matcher(incomingMessage);
-                while (matcher.find()) {
-                    obstacleX = matcher.group();
+                String obstacleCoord = "(.*)(^O\\(0?1?[0-9],0?1?[0-9],([^0]|[^1]?)\\)$)(.*)";
+                Pattern obstaclePattern = Pattern.compile(obstacleCoord);
+                Matcher sp = obstaclePattern.matcher(incomingMessage);
+                if (sp.find()) {
+                    //compare and ensure that it is O(x,y)
+                    Matcher matcher = Pattern.compile("[0-9]+").matcher(incomingMessage);
+                    while (matcher.find()) {
+                        receivedCoordinates++;
+                        switch (receivedCoordinates) {
+                            case 1:
+                                obstacleX = matcher.group();
+                                break;
+                            case 2:
+                                obstacleY = matcher.group();
+                                break;
+                            case 3:
+                                obstacleArrow = matcher.group();
+                                displayObstacle(obstacleX, obstacleY, obstacleArrow);
+                                break;
+
+                        }
+                    }
+                    //reset to set the next obstacle pointjm
+                    if (receivedCoordinates == 3)
+                        receivedCoordinates = 0;
+                    Toast.makeText(getApplicationContext(), "Obstacle:" + obstacleX + "," + obstacleY + "," + obstacleArrow, Toast.LENGTH_LONG).show();
+
+
                 }
-                Toast.makeText(getApplicationContext(), "Obstacle:" + obstacleX + "," + obstacleY, Toast.LENGTH_LONG).show();
-
-
                 //compare and ensure it is S(x,y)
                 //compare and ensure it is W(x,y)
             }
+
 
 //            else {
 //                String startCoord = "(.*)(^S\\(1?[0-9],1?[0-9]\\)$)(.*)";
@@ -395,6 +427,31 @@ public class MainActivity extends AppCompatActivity {
 //            }
         }
     };
+
+    private void displayObstacle(String obstacleX, String obstacleY, String obstacleArrow) {
+        Drawable upImage = this.getResources().getDrawable(R.drawable.up);
+        Drawable obstacleImage = this.getResources().getDrawable(R.drawable.obstacle);
+        int obstacleXValue = Integer.valueOf(obstacleX);
+        int obstacleYValue = Integer.valueOf(obstacleY);
+
+        int obstaclePoint = -(((obstacleYValue - 19) * 15) - obstacleXValue);
+        TextView op = findViewById(obstaclePoint);
+
+        if (obstacleArrow.equals("1") && obstacleCount <= 5) {
+            //with arrow
+            op.setText("U");
+            op.setBackground(upImage);
+            op.setTextColor(Color.parseColor("#FFFFFF"));
+            op.setGravity(Gravity.CENTER);
+            obstacleCount++;
+            Toast.makeText(getApplicationContext(), "Obstacle arrow created at " + obstaclePoint, Toast.LENGTH_LONG).show();
+        } else {
+            //without arrow
+            op.setBackground(obstacleImage);
+            Toast.makeText(getApplicationContext(), "Obstacle created at " + obstaclePoint, Toast.LENGTH_LONG).show();
+        }
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -473,7 +530,7 @@ public class MainActivity extends AppCompatActivity {
                 //listmsg.setText("HI");
 
             } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
-
+                //test using AMD
                 Intent reconnect_Intent = new Intent("reconnectMsg");
                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(reconnect_Intent);
             }
