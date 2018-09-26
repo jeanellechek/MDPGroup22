@@ -39,7 +39,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:background="#008000"
+                    android:background="#000066"
                     android:orientation="horizontal">
 
                     <TextView
@@ -48,7 +48,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:text="Start"
-                        android:textColor="#000066"
+                        android:textColor="#ffffff"
                         android:textSize="18dp" />
 
                     <TextView
@@ -58,7 +58,7 @@
                         android:layout_below="@+id/startLabel"
                         android:layout_centerHorizontal="true"
                         android:text="X: "
-                        android:textColor="#000066"
+                        android:textColor="#ffffff"
                         android:textSize="15dp" />
 
                     <TextView
@@ -68,7 +68,7 @@
                         android:layout_marginTop="25dp"
                         android:layout_toRightOf="@+id/startXText"
                         android:layout_centerHorizontal="true"
-                        android:textColor="#000066"
+                        android:textColor="#ffffff"
                         android:textSize="15dp" />
 
                     <TextView
@@ -78,7 +78,7 @@
                         android:layout_below="@+id/startXText"
                         android:layout_centerHorizontal="true"
                         android:text="Y: "
-                        android:textColor="#000066"
+                        android:textColor="#ffffff"
                         android:textSize="15dp" />
 
                     <TextView
@@ -88,7 +88,7 @@
                         android:layout_below="@+id/startXValue"
                         android:layout_toRightOf="@+id/startYText"
                         android:layout_centerHorizontal="true"
-                        android:textColor="#000066"
+                        android:textColor="#ffffff"
                         android:textSize="15dp" />
 
 
@@ -101,7 +101,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:background="#008000"
+                    android:background="#000066"
                     android:orientation="horizontal">
 
                     <TextView
@@ -110,7 +110,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:text="Waypoint"
-                        android:textColor="#000066"
+                        android:textColor="#ffffff"
                         android:textSize="18dp" />
 
                     <TextView
@@ -120,7 +120,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_below="@+id/waypointLabel"
                         android:text="X: "
-                        android:textColor="#000066"
+                        android:textColor="#ffffff"
                         android:textSize="15dp" />
 
                     <TextView
@@ -130,7 +130,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="25dp"
                         android:layout_toRightOf="@+id/waypointXText"
-                        android:textColor="#000066"
+                        android:textColor="#ffffff"
                         android:textSize="15dp" />
 
                     <TextView
@@ -140,7 +140,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_below="@+id/waypointXText"
                         android:text="Y: "
-                        android:textColor="#000066"
+                        android:textColor="#ffffff"
                         android:textSize="15dp" />
 
                     <TextView
@@ -163,7 +163,7 @@
                     android:layout_height="120dp"
                     android:layout_below="@+id/waypointLayout"
                     android:layout_margin="5dp"
-                    android:background="#008000"
+                    android:background="#000066"
                     android:orientation="horizontal">
 
                     <TextView
@@ -171,7 +171,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:text="Timing"
-                        android:textColor="#000066"
+                        android:textColor="#ffffff"
                         android:textSize="18dp" />
 
                     <TextView
@@ -181,7 +181,7 @@
                         android:layout_marginTop="28dp"
                         android:layout_centerHorizontal="true"
                         android:text="Fastest Path"
-                        android:textColor="#000066"
+                        android:textColor="#ffffff"
                         android:textSize="15dp" />
 
                     <TextView
@@ -191,7 +191,7 @@
                         android:layout_below="@+id/fastestPathLabel"
                         android:text="00:00:000"
                         android:layout_centerHorizontal="true"
-                        android:textColor="#000066"
+                        android:textColor="#ffffff"
                         android:textSize="15dp" />
 
                     <Button
@@ -223,7 +223,7 @@
                     android:layout_below="@+id/fastestPathLayout"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:background="#008000"
+                    android:background="#000066"
                     android:orientation="horizontal">
 
                     <TextView
@@ -232,7 +232,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:text="Exploration"
-                        android:textColor="#000066"
+                        android:textColor="#ffffff"
                         android:textSize="15dp" />
 
                     <TextView
@@ -242,7 +242,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_below="@+id/explorationLabel"
                         android:text="00:00:000"
-                        android:textColor="#000066"
+                        android:textColor="#ffffff"
                         android:textSize="15dp" />
 
                     <Button
@@ -377,7 +377,8 @@
                         android:layout_marginTop="100dp"
                         android:textColor="#ffffff"
                         android:inputType="text"
-                        android:hint="Enter message" />
+                        android:hint="Enter message"
+                        android:textColorHint="#FFFFFF" />
 
                     <Button
                         android:id="@+id/sendButton"
