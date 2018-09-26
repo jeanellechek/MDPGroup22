@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class DeviceListActivity extends Activity {
     private ArrayAdapter<String> NewDevicesArrayAdapter;
     private ArrayAdapter<String> pairedDevicesArrayAdapter;
     //static HandleSearch handleSearch;
-    BluetoothDevice btDevice;
+    BluetoothDevice btDevice, lastbtDevice;
     ArrayList<BluetoothDevice> arrayListPairedBluetoothDevices;
     ArrayList<BluetoothDevice> arrayListBluetoothDevices = null;
 
@@ -80,16 +81,20 @@ public class DeviceListActivity extends Activity {
         registerReceiver(mBroadcastReceiver1, filter);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver3, new IntentFilter("outMsg"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver4, new IntentFilter("reconnectMsg"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver5, new IntentFilter("robustMsg"));
 
     }
 
     public void startConnection() {
         //Log.d(TAG, "startBTConnection: Initializing RFCOM Bluetooth Connection");
         startBTConnection(btDevice, mdpUUID);
+        lastbtDevice = btDevice;
     }
 
     public void startBTConnection(BluetoothDevice device, UUID uuid) {
         Log.d(TAG, "startBTConnection: Initializing RFCOM Bluetooth Connection");
+        mBluetoothConnection.startClient(device, uuid);
         mBluetoothConnection.startClient(device, uuid);
     }
 
@@ -133,9 +138,7 @@ public class DeviceListActivity extends Activity {
         }
 
         // Unregister broadcast listeners
-
         unregisterReceiver(mBroadcastReceiver1);
-        // unregisterReceiver(mBroadcastReceiver2);
     }
 
     /**
@@ -286,6 +289,23 @@ public class DeviceListActivity extends Activity {
             String outgoingmsg = intent.getStringExtra("outgoingmsg");
             byte[] bytes = outgoingmsg.getBytes(Charset.defaultCharset());
             mBluetoothConnection.write(bytes);
+        }
+    };
+
+    private final BroadcastReceiver mBroadcastReceiver4 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            startBTConnection(lastbtDevice, mdpUUID);
+            Toast.makeText(getApplicationContext(), "Bluetooth reconnected.", Toast.LENGTH_LONG).show();
+        }
+    };
+
+
+    private final BroadcastReceiver mBroadcastReceiver5 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mBluetoothConnection.stop();
+            Toast.makeText(getApplicationContext(), "Bluetooth disconnected.", Toast.LENGTH_LONG).show();
         }
     };
 }

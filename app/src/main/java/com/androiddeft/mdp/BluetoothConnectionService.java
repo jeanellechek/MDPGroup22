@@ -278,4 +278,20 @@ public class BluetoothConnectionService {
         mConnectedThread.write(out);
     }
 
+    public synchronized void stop() {
+        if (mConnectThread != null) {
+            mConnectThread.cancel();
+            mConnectThread = null;
+        }
+        if (mConnectedThread != null) {
+            mConnectedThread.cancel();
+            mConnectedThread = null;
+        }
+        if (mInsecureAcceptThread != null) {
+            mInsecureAcceptThread.cancel();
+            mInsecureAcceptThread = null;
+        }
+        Log.d(TAG, "Disconnected");
+    }
+
 }

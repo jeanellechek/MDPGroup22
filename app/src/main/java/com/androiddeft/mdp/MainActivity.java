@@ -28,6 +28,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class MainActivity extends AppCompatActivity {
     //Map
     private GridView gridView;
@@ -174,7 +177,6 @@ public class MainActivity extends AppCompatActivity {
                         selectedWaypoint = true;
                         Toast.makeText(getApplicationContext(), "Waypoint coordinates changed.", Toast.LENGTH_LONG).show();
                     }
-
 
 
                 }
@@ -348,7 +350,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             incomingMessage = intent.getStringExtra("incomingmsg");
-
+            String obstacleX = null;
+            String obstacleY = null;
+            String startingX = null;
+            String startingY = null;
+            String waypointX = null;
+            String waypointY = null;
 
             if (incomingMessage.equals("down") || incomingMessage.equals("right") || incomingMessage.equals("left"))
                 robotRotate(incomingMessage);
@@ -356,6 +363,19 @@ public class MainActivity extends AppCompatActivity {
                 robotMovement();
             else if (incomingMessage.equals("stop"))
                 movementTextView.setText("Stopped");
+            else {
+                //compare and ensure that it is O(x,y)
+                Matcher matcher = Pattern.compile("[0-9]+").matcher(incomingMessage);
+                while (matcher.find()) {
+                    obstacleX = matcher.group();
+                }
+                Toast.makeText(getApplicationContext(), "Obstacle:" + obstacleX + "," + obstacleY, Toast.LENGTH_LONG).show();
+
+
+                //compare and ensure it is S(x,y)
+                //compare and ensure it is W(x,y)
+            }
+
 //            else {
 //                String startCoord = "(.*)(^S\\(1?[0-9],1?[0-9]\\)$)(.*)";
 //                Pattern startPattern = Pattern.compile(startCoord);
@@ -394,6 +414,10 @@ public class MainActivity extends AppCompatActivity {
                 BluetoothOn();
                 Intent serverIntent = new Intent(this, DeviceListActivity.class);
                 startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
+                break;
+            case R.id.robust:
+                Intent robust_Intent = new Intent("robustMsg");
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(robust_Intent);
                 break;
             case R.id.discoverable:
                 mBluetoothConnection = new BluetoothConnectionService(MainActivity.this);
@@ -450,6 +474,8 @@ public class MainActivity extends AppCompatActivity {
 
             } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
 
+                Intent reconnect_Intent = new Intent("reconnectMsg");
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(reconnect_Intent);
             }
         }
     };
