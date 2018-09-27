@@ -1,5 +1,6 @@
 package com.androiddeft.mdp;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     //for startpoint
     TextView startXValue, startYValue;
 
+
     //for rotation
     String currentDirection = "up";
     TextView movementTextView;
@@ -108,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
     boolean autoMode = true;
     ArrayList<String> manualList = new ArrayList<String>();
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -273,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
                     //clear
                     manualList.clear();
 
-                    
+
                     refresh.setVisibility(View.INVISIBLE);
                     Toast.makeText(getApplicationContext(), "In auto mode", Toast.LENGTH_LONG).show();
 
@@ -324,7 +327,19 @@ public class MainActivity extends AppCompatActivity {
                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
             }
         });
+        up.setOnTouchListener(new RepeatListener(400, 100, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (autoMode == true)
+                    robotMovement();
+                else
+                    manualList.add("up");
 
+                Intent messaging_intent = new Intent("outMsg");
+                messaging_intent.putExtra("outgoingmsg", "up");
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
+            }
+        }));
         down = findViewById(R.id.downButton);
 
         down.setOnClickListener(new View.OnClickListener() {
@@ -342,6 +357,20 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        down.setOnTouchListener(new RepeatListener(400, 100, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (autoMode == true)
+                    robotRotate("down");
+                else
+                    manualList.add("down");
+
+                Intent messaging_intent = new Intent("outMsg");
+                messaging_intent.putExtra("outgoingmsg", "down");
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
+            }
+        }));
 
         left = findViewById(R.id.leftButton);
 
@@ -361,6 +390,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        left.setOnTouchListener(new RepeatListener(400, 100, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (autoMode == true)
+                    robotRotate("left");
+                else
+                    manualList.add("left");
+
+                Intent messaging_intent = new Intent("outMsg");
+                messaging_intent.putExtra("outgoingmsg", "left");
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
+            }
+        }));
         right = findViewById(R.id.rightButton);
 
         right.setOnClickListener(new View.OnClickListener() {
@@ -379,7 +421,19 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        right.setOnTouchListener(new RepeatListener(400, 100, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (autoMode == true)
+                    robotRotate("right");
+                else
+                    manualList.add("right");
 
+                Intent messaging_intent = new Intent("outMsg");
+                messaging_intent.putExtra("outgoingmsg", "right");
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
+            }
+        }));
         sendButton = findViewById(R.id.sendButton);
         messageValue = findViewById(R.id.messageValue);
 
