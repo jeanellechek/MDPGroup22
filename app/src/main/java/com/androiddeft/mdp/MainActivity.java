@@ -20,11 +20,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     int topLeftCorner = 255;
 
     //Timer
-    Button start, stop, auto, manual, configButton, bluetoothButton, up, down, left, right, sendButton;
+    Button start, stop, refresh, configButton, bluetoothButton, up, down, left, right, sendButton;
     EditText messageValue;
     TextView time, boxID;
     private long startTime = 0L;
@@ -100,6 +102,10 @@ public class MainActivity extends AppCompatActivity {
 
     //obstacles
     int receivedCoordinates = 0;
+
+    //mode
+    Switch modeSwitch;
+    boolean autoMode = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -248,27 +254,37 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Auto or manual mode
-        auto = findViewById(R.id.autoButton);
-        manual = findViewById(R.id.manualButton);
+        modeSwitch = findViewById(R.id.modeSwitch);
+        refresh = findViewById(R.id.refreshButton);
 
-        auto.setOnClickListener(new View.OnClickListener() {
+
+        modeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // The toggle is enabled
+                    autoMode = true;
+                    refresh.setVisibility(View.INVISIBLE);
+                    Toast.makeText(getApplicationContext(), "Switch enabled", Toast.LENGTH_LONG).show();
+
+                } else {
+                    // The toggle is disabled
+                    autoMode = false;
+                    refresh.setVisibility(View.VISIBLE);
+                    Toast.makeText(getApplicationContext(), "Switch disabled", Toast.LENGTH_LONG).show();
+
+                }
+            }
+        });
+
+        refresh.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                auto.setVisibility(View.GONE);
-                manual.setVisibility(View.VISIBLE);
+                Toast.makeText(getApplicationContext(), "Refreshed.", Toast.LENGTH_LONG).show();
 
             }
         });
 
-        manual.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                manual.setVisibility(View.GONE);
-                auto.setVisibility(View.VISIBLE);
-            }
-        });
 
         //Directions
         movementTextView = findViewById(R.id.movementTextView);
