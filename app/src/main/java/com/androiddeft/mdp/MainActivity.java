@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
     //mode
     Switch modeSwitch;
     boolean autoMode = true;
+    ArrayList<String> manualList = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -263,14 +264,24 @@ public class MainActivity extends AppCompatActivity {
                 if (isChecked) {
                     // The toggle is enabled
                     autoMode = true;
+                    for (int i = 0; i < manualList.size(); i++) {
+                        if (manualList.get(i).equals("up"))
+                            robotMovement();
+                        else
+                            robotRotate(manualList.get(i));
+                    }
+                    //clear
+                    manualList.clear();
+
+                    
                     refresh.setVisibility(View.INVISIBLE);
-                    Toast.makeText(getApplicationContext(), "Switch enabled", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "In auto mode", Toast.LENGTH_LONG).show();
 
                 } else {
                     // The toggle is disabled
                     autoMode = false;
                     refresh.setVisibility(View.VISIBLE);
-                    Toast.makeText(getApplicationContext(), "Switch disabled", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "In manual mode", Toast.LENGTH_LONG).show();
 
                 }
             }
@@ -280,6 +291,15 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+                for (int i = 0; i < manualList.size(); i++) {
+                    if (manualList.get(i).equals("up"))
+                        robotMovement();
+                    else
+                        robotRotate(manualList.get(i));
+                }
+                //clear
+                manualList.clear();
+
                 Toast.makeText(getApplicationContext(), "Refreshed.", Toast.LENGTH_LONG).show();
 
             }
@@ -294,8 +314,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+                if (autoMode == true)
+                    robotMovement();
+                else
+                    manualList.add("up");
 
-                robotMovement();
                 Intent messaging_intent = new Intent("outMsg");
                 messaging_intent.putExtra("outgoingmsg", "up");
                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
@@ -308,8 +331,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-
-                robotRotate("down");
+                if (autoMode == true)
+                    robotRotate("down");
+                else
+                    manualList.add("down");
 
                 Intent messaging_intent = new Intent("outMsg");
                 messaging_intent.putExtra("outgoingmsg", "down");
@@ -324,8 +349,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-
-                robotRotate("left");
+                if (autoMode == true)
+                    robotRotate("left");
+                else
+                    manualList.add("left");
 
                 Intent messaging_intent = new Intent("outMsg");
                 messaging_intent.putExtra("outgoingmsg", "left");
@@ -340,7 +367,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                robotRotate("right");
+
+                if (autoMode == true)
+                    robotRotate("right");
+                else
+                    manualList.add("right");
 
                 Intent messaging_intent = new Intent("outMsg");
                 messaging_intent.putExtra("outgoingmsg", "right");
@@ -865,5 +896,77 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+//
+//    //STOP HERE HALFWAY
+//    public void manualRobotRotate(String direction) {
+//
+//        for (int y = 0; y < 300; y++) {
+//            TextView t = findViewById(y);
+//            if (waypointList != y) {
+//                if (y == topLeftCorner || y == topLeftCorner + 1 || y == topLeftCorner + 2 || y == topLeftCorner + 15 || y == topLeftCorner + 16 || y == topLeftCorner + 17
+//                        || y == topLeftCorner + 30 || y == topLeftCorner + 31 || y == topLeftCorner + 32) {
+//                    if (y == topLeftCorner + 16) {
+//                        t.setText("");
+//                        switch (direction) {
+//                            case "left":
+//                                if (currentDirection == "up") {
+//                                    t.setBackground(leftImage);
+//                                    currentDirection = "left";
+//                                } else if (currentDirection == "right") {
+//                                    t.setBackground(upImage);
+//                                    currentDirection = "up";
+//                                } else if (currentDirection == "down") {
+//                                    t.setBackground(rightImage);
+//                                    currentDirection = "right";
+//                                } else if (currentDirection == "left") {
+//                                    t.setBackground(downImage);
+//                                    currentDirection = "down";
+//                                }
+//                                break;
+//                            case "down":
+//                                if (currentDirection == "left") {
+//                                    t.setBackground(rightImage);
+//                                    currentDirection = "right";
+//                                } else if (currentDirection == "right") {
+//                                    t.setBackground(leftImage);
+//                                    currentDirection = "left";
+//                                } else if (currentDirection == "down") {
+//                                    t.setBackground(upImage);
+//                                    currentDirection = "up";
+//                                } else if (currentDirection == "up") {
+//                                    t.setBackground(downImage);
+//                                    currentDirection = "down";
+//                                }
+//                                break;
+//                            case "right":
+//                                if (currentDirection == "left") {
+//                                    t.setBackground(upImage);
+//                                    currentDirection = "up";
+//                                } else if (currentDirection == "right") {
+//                                    t.setBackground(downImage);
+//                                    currentDirection = "down";
+//                                } else if (currentDirection == "up") {
+//                                    t.setBackground(rightImage);
+//                                    currentDirection = "right";
+//                                } else if (currentDirection == "down") {
+//                                    t.setBackground(leftImage);
+//                                    currentDirection = "left";
+//                                }
+//                                break;
+//
+//                        }
+//                    } else {
+//                        t.setBackground(robot);
+//                        t.setText("1");
+//                        t.setTextColor(Color.parseColor("#FF0000"));
+//                    }
+//
+//                }
+//            }
+//
+//
+//        }
+//        movementTextView.setText("Turning " + currentDirection);
+//    }
 
 }
