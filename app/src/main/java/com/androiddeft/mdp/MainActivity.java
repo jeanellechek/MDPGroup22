@@ -182,23 +182,14 @@ public class MainActivity extends AppCompatActivity {
                         TextView oldPoint = findViewById(waypointList);
                         oldPoint.setBackground(box);
                         oldPoint.setText("");
+                        waypointXValue = findViewById(R.id.waypointXValue);
+                        waypointYValue = findViewById(R.id.waypointYValue);
+                        waypointXValue.setText("");
+                        waypointYValue.setText("");
 
                         waypointList = 0;
                         selectedWaypoint = false;
                         Toast.makeText(getApplicationContext(), "Waypoint coordinates removed.", Toast.LENGTH_LONG).show();
-                    } else {
-                        //change waypoint
-                        TextView oldPoint = findViewById(waypointList);
-                        oldPoint.setBackground(box);
-                        oldPoint.setText("");
-
-                        TextView newPoint = findViewById(view.getId());
-                        newPoint.setBackground(waypoint);
-                        newPoint.setText("W");
-
-                        waypointList = view.getId();
-                        selectedWaypoint = true;
-                        Toast.makeText(getApplicationContext(), "Waypoint coordinates changed.", Toast.LENGTH_LONG).show();
                     }
 
 
@@ -831,7 +822,40 @@ public class MainActivity extends AppCompatActivity {
 
         for (int y = 0; y < 300; y++) {
             TextView t = findViewById(y);
-            if (waypointList != y) {
+            if (selectedWaypoint == false) {
+                if (y == topLeftCorner || y == topLeftCorner + 1 || y == topLeftCorner + 2 || y == topLeftCorner + 15 || y == topLeftCorner + 16 || y == topLeftCorner + 17
+                        || y == topLeftCorner + 30 || y == topLeftCorner + 31 || y == topLeftCorner + 32) {
+                    //if (topLeftCorner + y < topLeftCorner + 3)
+                    if (y == topLeftCorner + 16) {
+                        t.setText("");
+                        switch (currentDirection) {
+                            case "up":
+                                t.setBackground(upImage);
+                                break;
+                            case "down":
+                                t.setBackground(downImage);
+                                break;
+                            case "left":
+                                t.setBackground(leftImage);
+                                break;
+                            case "right":
+                                t.setBackground(rightImage);
+                                break;
+
+                        }
+                    } else {
+                        t.setBackground(robot);
+                        t.setText("1");
+                        t.setTextColor(Color.parseColor("#FF0000"));
+                    }
+
+                } else if (y == 12 || y == 13 || y == 14 || y == 27 || y == 28 || y == 29 || y == 42 || y == 43 || y == 44)
+                    boxID.setBackground(endpoint);
+                else
+                    t.setBackground(box);
+
+
+            } else if (waypointList != y && selectedWaypoint == true) {
                 if (y == topLeftCorner || y == topLeftCorner + 1 || y == topLeftCorner + 2 || y == topLeftCorner + 15 || y == topLeftCorner + 16 || y == topLeftCorner + 17
                         || y == topLeftCorner + 30 || y == topLeftCorner + 31 || y == topLeftCorner + 32) {
                     //if (topLeftCorner + y < topLeftCorner + 3)

@@ -150,7 +150,7 @@
                         android:layout_below="@+id/waypointXValue"
                         android:layout_centerHorizontal="true"
                         android:layout_toRightOf="@+id/waypointYText"
-                        android:textColor="#000066"
+                        android:textColor="#ffffff"
                         android:textSize="15dp" />
 
 
