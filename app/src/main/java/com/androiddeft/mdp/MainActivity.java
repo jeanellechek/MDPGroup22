@@ -41,17 +41,22 @@ public class MainActivity extends AppCompatActivity {
     int topLeftCorner = 255;
 
     //Timer
-    Button start, stop, refresh, configButton, bluetoothButton, up, down, left, right, sendButton;
+    Button start, stop, start1, stop1, refresh, configButton, bluetoothButton, up, down, left, right, sendButton;
     EditText messageValue;
-    TextView time, boxID;
+    TextView time, time1, boxID;
     private long startTime = 0L;
+    private long startTime1 = 0L;
 
     private Handler customHandler = new Handler();
 
     long timeInMilliseconds = 0L;
     long timeSwapBuff = 0L;
     long updatedTime = 0L;
+    long timeInMilliseconds1 = 0L;
+    long timeSwapBuff1 = 0L;
+    long updatedTime1 = 0L;
     boolean stopTimer = false;
+    boolean stopTimer1 = false;
 
     //for logging
     public static final String TAG = "MainActivity";
@@ -244,6 +249,37 @@ public class MainActivity extends AppCompatActivity {
                 start.setVisibility(View.VISIBLE);
                 start.setText("Restart");
                 time.setText("00:00:000");
+
+            }
+        });
+
+        //Exploration
+        start1 = findViewById(R.id.startButton1);
+        stop1 = findViewById(R.id.stopButton1);
+        time1 = findViewById(R.id.timerValue1);
+        start1.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                stopTimer1 = false;
+                startTime1 = SystemClock.uptimeMillis();
+                customHandler.postDelayed(updateTimerThread1, 0);
+                start1.setVisibility(View.GONE);
+                stop1.setVisibility(View.VISIBLE);
+
+            }
+        });
+
+        stop1.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                stopTimer1 = true;
+                customHandler.removeCallbacks(null);
+                stop1.setVisibility(View.GONE);
+                start1.setVisibility(View.VISIBLE);
+                start1.setText("Restart");
+                time1.setText("00:00:000");
 
             }
         });
@@ -695,7 +731,29 @@ public class MainActivity extends AppCompatActivity {
             if (!stopTimer)
                 customHandler.postDelayed(this, 0);
         }
+    };
 
+    //Exploration
+    private Runnable updateTimerThread1 = new Runnable() {
+
+        public void run() {
+            timeInMilliseconds1 = SystemClock.uptimeMillis() - startTime1;
+
+            updatedTime1 = timeSwapBuff1 + timeInMilliseconds1;
+
+            int secs = (int) (updatedTime1 / 1000);
+            int mins = secs / 60;
+            secs = secs % 60;
+            int milliseconds = (int) (updatedTime1 % 1000);
+            String localtime = "" + mins + ":" + String.format("%02d", secs)
+                    + ":" + String.format("%03d", milliseconds);
+            time1.setText(localtime);
+            if (mins == 1) {
+                stopTimer1 = true;
+            }
+            if (!stopTimer1)
+                customHandler.postDelayed(this, 0);
+        }
     };
 
     public void robotRotate(String direction) {
