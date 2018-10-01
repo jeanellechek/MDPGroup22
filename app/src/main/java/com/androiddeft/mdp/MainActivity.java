@@ -115,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar().setSubtitle("Not connected");
 
         GridLayout foreground = findViewById(R.id.gridMapLayout);
         final Drawable box = this.getResources().getDrawable(R.drawable.box);
@@ -614,10 +613,10 @@ public class MainActivity extends AppCompatActivity {
 
             }
             if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
-                getSupportActionBar().setSubtitle("Connected");
+
 
             } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
-                getSupportActionBar().setSubtitle("Trying to reconnect");
+
                 //test using AMD
                 Intent reconnect_Intent = new Intent("reconnectMsg");
                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(reconnect_Intent);
