@@ -3,7 +3,6 @@
     android:id="@+id/ly_msg"
     android:layout_width="match_parent"
     android:layout_height="400dp"
-    android:orientation="vertical"
     android:padding="5dp"
     android:paddingEnd="14dp"
     android:paddingStart="14dp">

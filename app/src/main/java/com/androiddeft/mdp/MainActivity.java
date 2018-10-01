@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().setSubtitle("Not connected");
 
         GridLayout foreground = findViewById(R.id.gridMapLayout);
         final Drawable box = this.getResources().getDrawable(R.drawable.box);
@@ -564,10 +565,6 @@ public class MainActivity extends AppCompatActivity {
                 Intent serverIntent = new Intent(this, DeviceListActivity.class);
                 startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_SECURE);
                 break;
-            case R.id.robust:
-                Intent robust_Intent = new Intent("robustMsg");
-                LocalBroadcastManager.getInstance(mContext).sendBroadcast(robust_Intent);
-                break;
             case R.id.discoverable:
                 mBluetoothConnection = new BluetoothConnectionService(MainActivity.this);
                 BluetoothDiscoverable();
@@ -617,11 +614,10 @@ public class MainActivity extends AppCompatActivity {
 
             }
             if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
-
-                //rl_msg.setVisibility(View.VISIBLE);
-                //listmsg.setText("HI");
+                getSupportActionBar().setSubtitle("Connected");
 
             } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
+                getSupportActionBar().setSubtitle("Not connected");
                 //test using AMD
                 Intent reconnect_Intent = new Intent("reconnectMsg");
                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(reconnect_Intent);
