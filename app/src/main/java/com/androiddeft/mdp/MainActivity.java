@@ -617,7 +617,7 @@ public class MainActivity extends AppCompatActivity {
                 getSupportActionBar().setSubtitle("Connected");
 
             } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
-                getSupportActionBar().setSubtitle("Not connected");
+                getSupportActionBar().setSubtitle("Trying to reconnect");
                 //test using AMD
                 Intent reconnect_Intent = new Intent("reconnectMsg");
                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(reconnect_Intent);
