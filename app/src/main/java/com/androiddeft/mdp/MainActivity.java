@@ -85,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
     String waypointY = null;
     int obstacleCount = 0;
 
+    //MDF
+    String MDF1Value = null;
     BluetoothAdapter myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     public static final int REQUEST_CONNECT_DEVICE_SECURE = 6;
 
@@ -495,34 +497,46 @@ public class MainActivity extends AppCompatActivity {
             String obstacleArrow = null;
             incomingMessage = intent.getStringExtra("incomingmsg");
 
+            //obstacle regex
+            String obstacleRegex = "(.*)(^O\\(0?1?[0-9],0?1?[0-9],([^0]|[^1]?)\\)$)(.*)";
+            Pattern obstaclePattern = Pattern.compile(obstacleRegex);
+            Matcher obstacleMatcher = obstaclePattern.matcher(incomingMessage);
+
+            //MDF1 regex
+            String MDF1Regex = "(.*)(^MDF1*)(.*)";
+            Pattern MDF1Pattern = Pattern.compile(MDF1Regex);
+            Matcher MDF1Matcher = MDF1Pattern.matcher(incomingMessage);
+
+
             if (incomingMessage.equals("down") || incomingMessage.equals("right") || incomingMessage.equals("left"))
                 robotRotate(incomingMessage);
             else if (incomingMessage.equals("up"))
                 robotMovement();
             else if (incomingMessage.equals("stop"))
                 movementTextView.setText("Stopped");
-            else {
-                String obstacleCoord = "(.*)(^O\\(0?1?[0-9],0?1?[0-9],([^0]|[^1]?)\\)$)(.*)";
-                Pattern obstaclePattern = Pattern.compile(obstacleCoord);
-                Matcher sp = obstaclePattern.matcher(incomingMessage);
-                if (sp.find()) {
-                    //compare and ensure that it is O(x,y)
-                    Matcher matcher = Pattern.compile("[0-9]+").matcher(incomingMessage);
-                    while (matcher.find()) {
-                        receivedCoordinates++;
-                        switch (receivedCoordinates) {
-                            case 1:
-                                obstacleX = matcher.group();
-                                break;
-                            case 2:
-                                obstacleY = matcher.group();
-                                break;
-                            case 3:
-                                obstacleArrow = matcher.group();
-                                displayObstacle(obstacleX, obstacleY, obstacleArrow);
-                                break;
+            else if (MDF1Matcher.find()) { //Eg: MDF1ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                MDF1Value = incomingMessage.substring(4, incomingMessage.length());
+                TextView MDF1 = findViewById(R.id.txtMDF1);
+                MDF1.setText(MDF1Value);
 
-                        }
+            } else if (obstacleMatcher.find()) {
+                //compare and ensure that it is O(x,y)
+                Matcher matcher = Pattern.compile("[0-9]+").matcher(incomingMessage);
+                while (matcher.find()) {
+                    receivedCoordinates++;
+                    switch (receivedCoordinates) {
+                        case 1:
+                            obstacleX = matcher.group();
+                            break;
+                        case 2:
+                            obstacleY = matcher.group();
+                            break;
+                        case 3:
+                            obstacleArrow = matcher.group();
+                            displayObstacle(obstacleX, obstacleY, obstacleArrow);
+                            break;
+
+
                     }
                     //reset to set the next obstacle pointjm
                     if (receivedCoordinates == 3)

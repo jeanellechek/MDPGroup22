@@ -12,6 +12,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.UUID;
 
@@ -129,15 +130,31 @@ public class BluetoothConnectionService {
                 connected(mmSocket, mmDevice);
             } catch (IOException e) {
                 // Close the socket
-                try {
-                    mmSocket.close();
-                    Log.d(TAG, "run: Closed Socket.");
-                } catch (IOException e1) {
-                    Log.e(TAG, "mConnectThread: run: Unable to close connection in socket " + e1.getMessage());
-                }
-                Log.d(TAG, "run: ConnectThread: Could not connect to UUID: " + deviceUUID);
+
+                mmSocket = reconnect(tmp);
+                Log.d(TAG, "ConnectThread: Reconnect");
             }
         }
+
+        BluetoothSocket reconnect(BluetoothSocket tmp) {
+            Class<?> class2 = tmp.getRemoteDevice().getClass();
+            Class<?>[] paramTypes = new Class<?>[]{Integer.TYPE};
+
+            Method m = null;
+            try {
+                m = class2.getMethod("createRfcommSocket", paramTypes);
+                Object[] params = new Object[]{Integer.valueOf(1)};
+
+                BluetoothSocket fbs = (BluetoothSocket) m.invoke(tmp.getRemoteDevice(), params);
+                fbs.connect();
+                connected(fbs, mmDevice);
+                return fbs;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
 
         public void cancel() {
             try {
