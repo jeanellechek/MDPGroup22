@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
     //MDF
     String MDF1Value = null;
+    String MDF2Value = null;
     BluetoothAdapter myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     public static final int REQUEST_CONNECT_DEVICE_SECURE = 6;
 
@@ -503,9 +504,14 @@ public class MainActivity extends AppCompatActivity {
             Matcher obstacleMatcher = obstaclePattern.matcher(incomingMessage);
 
             //MDF1 regex
-            String MDF1Regex = "(.*)(^MDF1*)(.*)";
+            String MDF1Regex = "(.*)(^MDF1)(.*)";
             Pattern MDF1Pattern = Pattern.compile(MDF1Regex);
             Matcher MDF1Matcher = MDF1Pattern.matcher(incomingMessage);
+
+            //MDF2 regex
+            String MDF2Regex = "(.*)(^MDF2)(.*)";
+            Pattern MDF2Pattern = Pattern.compile(MDF2Regex);
+            Matcher MDF2Matcher = MDF2Pattern.matcher(incomingMessage);
 
 
             if (incomingMessage.equals("down") || incomingMessage.equals("right") || incomingMessage.equals("left"))
@@ -518,6 +524,11 @@ public class MainActivity extends AppCompatActivity {
                 MDF1Value = incomingMessage.substring(4, incomingMessage.length());
                 TextView MDF1 = findViewById(R.id.txtMDF1);
                 MDF1.setText(MDF1Value);
+
+            } else if (MDF2Matcher.find()) { //Eg: MDF2ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                MDF2Value = incomingMessage.substring(4, incomingMessage.length());
+                TextView MDF2 = findViewById(R.id.txtMDF2);
+                MDF2.setText(MDF2Value);
 
             } else if (obstacleMatcher.find()) {
                 //compare and ensure that it is O(x,y)
