@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     //for rotation
-    String currentDirection = "up";
+    String currentDirection = "w";
     TextView movementTextView;
 
     //for obstacles
@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
 
                             Intent messaging_intent = new Intent("outMsg");
-                            messaging_intent.putExtra("outgoingmsg", "W(" + waypointXValue.getText().toString() + "," + waypointYValue.getText().toString() + ")");
+                            messaging_intent.putExtra("outgoingmsg", "pW(" + waypointXValue.getText().toString() + "," + waypointYValue.getText().toString() + ")");
                             LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
 
                         }
@@ -298,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
                     // The toggle is enabled
                     autoMode = true;
                     for (int i = 0; i < manualList.size(); i++) {
-                        if (manualList.get(i).equals("up"))
+                        if (manualList.get(i).equals("w"))
                             robotMovement();
                         else
                             robotRotate(manualList.get(i));
@@ -325,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 for (int i = 0; i < manualList.size(); i++) {
-                    if (manualList.get(i).equals("up"))
+                    if (manualList.get(i).equals("w"))
                         robotMovement();
                     else
                         robotRotate(manualList.get(i));
@@ -350,10 +350,10 @@ public class MainActivity extends AppCompatActivity {
                 if (autoMode == true)
                     robotMovement();
                 else
-                    manualList.add("up");
+                    manualList.add("w");
 
                 Intent messaging_intent = new Intent("outMsg");
-                messaging_intent.putExtra("outgoingmsg", "up");
+                messaging_intent.putExtra("outgoingmsg", "bw");
                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
             }
         });
@@ -363,10 +363,10 @@ public class MainActivity extends AppCompatActivity {
                 if (autoMode == true)
                     robotMovement();
                 else
-                    manualList.add("up");
+                    manualList.add("w");
 
                 Intent messaging_intent = new Intent("outMsg");
-                messaging_intent.putExtra("outgoingmsg", "up");
+                messaging_intent.putExtra("outgoingmsg", "bw");
                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
             }
         }));
@@ -377,12 +377,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (autoMode == true)
-                    robotRotate("down");
+                    robotRotate("s");
                 else
-                    manualList.add("down");
+                    manualList.add("s");
 
                 Intent messaging_intent = new Intent("outMsg");
-                messaging_intent.putExtra("outgoingmsg", "down");
+                messaging_intent.putExtra("outgoingmsg", "bs");
                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
 
             }
@@ -392,12 +392,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (autoMode == true)
-                    robotRotate("down");
+                    robotRotate("s");
                 else
-                    manualList.add("down");
+                    manualList.add("s");
 
                 Intent messaging_intent = new Intent("outMsg");
-                messaging_intent.putExtra("outgoingmsg", "down");
+                messaging_intent.putExtra("outgoingmsg", "bs");
                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
             }
         }));
@@ -409,12 +409,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (autoMode == true)
-                    robotRotate("left");
+                    robotRotate("a");
                 else
-                    manualList.add("left");
+                    manualList.add("a");
 
                 Intent messaging_intent = new Intent("outMsg");
-                messaging_intent.putExtra("outgoingmsg", "left");
+                messaging_intent.putExtra("outgoingmsg", "ba");
                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
 
             }
@@ -424,12 +424,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (autoMode == true)
-                    robotRotate("left");
+                    robotRotate("a");
                 else
-                    manualList.add("left");
+                    manualList.add("a");
 
                 Intent messaging_intent = new Intent("outMsg");
-                messaging_intent.putExtra("outgoingmsg", "left");
+                messaging_intent.putExtra("outgoingmsg", "ba");
                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
             }
         }));
@@ -441,12 +441,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (autoMode == true)
-                    robotRotate("right");
+                    robotRotate("d");
                 else
-                    manualList.add("right");
+                    manualList.add("d");
 
                 Intent messaging_intent = new Intent("outMsg");
-                messaging_intent.putExtra("outgoingmsg", "right");
+                messaging_intent.putExtra("outgoingmsg", "bd");
                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
 
             }
@@ -455,12 +455,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (autoMode == true)
-                    robotRotate("right");
+                    robotRotate("d");
                 else
-                    manualList.add("right");
+                    manualList.add("d");
 
                 Intent messaging_intent = new Intent("outMsg");
-                messaging_intent.putExtra("outgoingmsg", "right");
+                messaging_intent.putExtra("outgoingmsg", "bd");
                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
             }
         }));
@@ -514,9 +514,9 @@ public class MainActivity extends AppCompatActivity {
             Matcher MDF2Matcher = MDF2Pattern.matcher(incomingMessage);
 
 
-            if (incomingMessage.equals("down") || incomingMessage.equals("right") || incomingMessage.equals("left"))
+            if (incomingMessage.equals("s") || incomingMessage.equals("d") || incomingMessage.equals("a"))
                 robotRotate(incomingMessage);
-            else if (incomingMessage.equals("up"))
+            else if (incomingMessage.equals("w"))
                 robotMovement();
             else if (incomingMessage.equals("stop"))
                 movementTextView.setText("Stopped");
@@ -800,49 +800,49 @@ public class MainActivity extends AppCompatActivity {
                     if (y == topLeftCorner + 16) {
                         t.setText("");
                         switch (direction) {
-                            case "left":
-                                if (currentDirection == "up") {
+                            case "a":
+                                if (currentDirection == "w") {
                                     t.setBackground(leftImage);
-                                    currentDirection = "left";
-                                } else if (currentDirection == "right") {
+                                    currentDirection = "a";
+                                } else if (currentDirection == "d") {
                                     t.setBackground(upImage);
-                                    currentDirection = "up";
-                                } else if (currentDirection == "down") {
+                                    currentDirection = "w";
+                                } else if (currentDirection == "s") {
                                     t.setBackground(rightImage);
-                                    currentDirection = "right";
-                                } else if (currentDirection == "left") {
+                                    currentDirection = "d";
+                                } else if (currentDirection == "a") {
                                     t.setBackground(downImage);
-                                    currentDirection = "down";
+                                    currentDirection = "s";
                                 }
                                 break;
-                            case "down":
-                                if (currentDirection == "left") {
+                            case "s":
+                                if (currentDirection == "a") {
                                     t.setBackground(rightImage);
-                                    currentDirection = "right";
-                                } else if (currentDirection == "right") {
+                                    currentDirection = "d";
+                                } else if (currentDirection == "d") {
                                     t.setBackground(leftImage);
-                                    currentDirection = "left";
-                                } else if (currentDirection == "down") {
+                                    currentDirection = "a";
+                                } else if (currentDirection == "s") {
                                     t.setBackground(upImage);
-                                    currentDirection = "up";
-                                } else if (currentDirection == "up") {
+                                    currentDirection = "w";
+                                } else if (currentDirection == "w") {
                                     t.setBackground(downImage);
-                                    currentDirection = "down";
+                                    currentDirection = "s";
                                 }
                                 break;
-                            case "right":
-                                if (currentDirection == "left") {
+                            case "d":
+                                if (currentDirection == "a") {
                                     t.setBackground(upImage);
-                                    currentDirection = "up";
-                                } else if (currentDirection == "right") {
+                                    currentDirection = "w";
+                                } else if (currentDirection == "d") {
                                     t.setBackground(downImage);
-                                    currentDirection = "down";
-                                } else if (currentDirection == "up") {
+                                    currentDirection = "s";
+                                } else if (currentDirection == "w") {
                                     t.setBackground(rightImage);
-                                    currentDirection = "right";
-                                } else if (currentDirection == "down") {
+                                    currentDirection = "d";
+                                } else if (currentDirection == "s") {
                                     t.setBackground(leftImage);
-                                    currentDirection = "left";
+                                    currentDirection = "a";
                                 }
                                 break;
 
@@ -872,25 +872,25 @@ public class MainActivity extends AppCompatActivity {
         Drawable rightImage = this.getResources().getDrawable(R.drawable.right);
 
         switch (currentDirection) {
-            case "up":
+            case "w":
                 if (topLeftCorner < 15)
                     break;
                 else
                     topLeftCorner -= 15;
                 break;
-            case "down":
+            case "s":
                 if (topLeftCorner >= 255)
                     break;
                 else
                     topLeftCorner += 15;
                 break;
-            case "right":
+            case "d":
                 if (topLeftCorner % 15 == 12)
                     break;
                 else
                     topLeftCorner += 1;
                 break;
-            case "left":
+            case "a":
                 if (topLeftCorner % 15 == 0)
                     break;
                 else
@@ -907,16 +907,16 @@ public class MainActivity extends AppCompatActivity {
                     if (y == topLeftCorner + 16) {
                         t.setText("");
                         switch (currentDirection) {
-                            case "up":
+                            case "w":
                                 t.setBackground(upImage);
                                 break;
-                            case "down":
+                            case "s":
                                 t.setBackground(downImage);
                                 break;
-                            case "left":
+                            case "a":
                                 t.setBackground(leftImage);
                                 break;
-                            case "right":
+                            case "d":
                                 t.setBackground(rightImage);
                                 break;
 
@@ -940,16 +940,16 @@ public class MainActivity extends AppCompatActivity {
                     if (y == topLeftCorner + 16) {
                         t.setText("");
                         switch (currentDirection) {
-                            case "up":
+                            case "w":
                                 t.setBackground(upImage);
                                 break;
-                            case "down":
+                            case "s":
                                 t.setBackground(downImage);
                                 break;
-                            case "left":
+                            case "a":
                                 t.setBackground(leftImage);
                                 break;
-                            case "right":
+                            case "d":
                                 t.setBackground(rightImage);
                                 break;
 
@@ -1018,16 +1018,16 @@ public class MainActivity extends AppCompatActivity {
                     if (y == topLeftCorner + 16) {
                         t.setText("");
                         switch (currentDirection) {
-                            case "up":
+                            case "w":
                                 t.setBackground(upImage);
                                 break;
-                            case "down":
+                            case "s":
                                 t.setBackground(downImage);
                                 break;
-                            case "left":
+                            case "a":
                                 t.setBackground(leftImage);
                                 break;
-                            case "right":
+                            case "d":
                                 t.setBackground(rightImage);
                                 break;
 
@@ -1052,77 +1052,5 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//
-//    //STOP HERE HALFWAY
-//    public void manualRobotRotate(String direction) {
-//
-//        for (int y = 0; y < 300; y++) {
-//            TextView t = findViewById(y);
-//            if (waypointList != y) {
-//                if (y == topLeftCorner || y == topLeftCorner + 1 || y == topLeftCorner + 2 || y == topLeftCorner + 15 || y == topLeftCorner + 16 || y == topLeftCorner + 17
-//                        || y == topLeftCorner + 30 || y == topLeftCorner + 31 || y == topLeftCorner + 32) {
-//                    if (y == topLeftCorner + 16) {
-//                        t.setText("");
-//                        switch (direction) {
-//                            case "left":
-//                                if (currentDirection == "up") {
-//                                    t.setBackground(leftImage);
-//                                    currentDirection = "left";
-//                                } else if (currentDirection == "right") {
-//                                    t.setBackground(upImage);
-//                                    currentDirection = "up";
-//                                } else if (currentDirection == "down") {
-//                                    t.setBackground(rightImage);
-//                                    currentDirection = "right";
-//                                } else if (currentDirection == "left") {
-//                                    t.setBackground(downImage);
-//                                    currentDirection = "down";
-//                                }
-//                                break;
-//                            case "down":
-//                                if (currentDirection == "left") {
-//                                    t.setBackground(rightImage);
-//                                    currentDirection = "right";
-//                                } else if (currentDirection == "right") {
-//                                    t.setBackground(leftImage);
-//                                    currentDirection = "left";
-//                                } else if (currentDirection == "down") {
-//                                    t.setBackground(upImage);
-//                                    currentDirection = "up";
-//                                } else if (currentDirection == "up") {
-//                                    t.setBackground(downImage);
-//                                    currentDirection = "down";
-//                                }
-//                                break;
-//                            case "right":
-//                                if (currentDirection == "left") {
-//                                    t.setBackground(upImage);
-//                                    currentDirection = "up";
-//                                } else if (currentDirection == "right") {
-//                                    t.setBackground(downImage);
-//                                    currentDirection = "down";
-//                                } else if (currentDirection == "up") {
-//                                    t.setBackground(rightImage);
-//                                    currentDirection = "right";
-//                                } else if (currentDirection == "down") {
-//                                    t.setBackground(leftImage);
-//                                    currentDirection = "left";
-//                                }
-//                                break;
-//
-//                        }
-//                    } else {
-//                        t.setBackground(robot);
-//                        t.setText("1");
-//                        t.setTextColor(Color.parseColor("#FF0000"));
-//                    }
-//
-//                }
-//            }
-//
-//
-//        }
-//        movementTextView.setText("Turning " + currentDirection);
-//    }
 
 }
