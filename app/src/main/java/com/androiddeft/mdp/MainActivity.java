@@ -1,6 +1,5 @@
 package com.androiddeft.mdp;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -77,14 +76,12 @@ public class MainActivity extends AppCompatActivity {
     TextView movementTextView;
 
     //for obstacles
-    ArrayList<Integer> obstacleList = new ArrayList<Integer>();
+    ArrayList<Integer> noArrowObstacles = new ArrayList<Integer>(); //without arrows
+    ArrayList<Integer> arrowObstacles = new ArrayList<Integer>(); //with arrows
+
+    int receivedCoordinates = 0;
     String arrowCoordinates;
     String direction = null;
-
-    String startingX = null;
-    String startingY = null;
-    String waypointX = null;
-    String waypointY = null;
     int obstacleCount = 0;
 
     //MDF
@@ -112,16 +109,18 @@ public class MainActivity extends AppCompatActivity {
     String incomingMessage = null;
     boolean selectedWaypoint = false;
 
-    //obstacles
-    int receivedCoordinates = 0;
-    ArrayList<Integer> arrowObstacles = new ArrayList<>();
 
     //mode
     Switch modeSwitch;
     boolean autoMode = true;
     ArrayList<String> manualList = new ArrayList<String>();
 
-    @SuppressLint("ClickableViewAccessibility")
+    //explored
+    String exploredX = null;
+    String exploredY = null;
+    TextView exploredTV;
+    ArrayList<Integer> exploredList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -239,6 +238,11 @@ public class MainActivity extends AppCompatActivity {
                 stopTimer = false;
                 startTime = SystemClock.uptimeMillis();
                 customHandler.postDelayed(updateTimerThread, 0);
+
+                topLeftCorner = 255;
+                currentDirection = "w";
+
+                robotStart();
                 Intent messaging_intent = new Intent("outMsg");
                 messaging_intent.putExtra("outgoingmsg", "fastest");
                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
@@ -509,6 +513,7 @@ public class MainActivity extends AppCompatActivity {
             incomingMessage = intent.getStringExtra("incomingmsg");
             Toast.makeText(getApplicationContext(), "Received: " + incomingMessage,
                     Toast.LENGTH_SHORT).show();
+
             //obstacle regex
             String obstacleRegex = "(.*)(^O\\(0?1?[0-9],0?1?[0-9],([^0]|[^1]?)\\)$)(.*)";
             Pattern obstaclePattern = Pattern.compile(obstacleRegex);
@@ -524,6 +529,10 @@ public class MainActivity extends AppCompatActivity {
             Pattern MDF2Pattern = Pattern.compile(MDF2Regex);
             Matcher MDF2Matcher = MDF2Pattern.matcher(incomingMessage);
 
+            //Explored regex
+            String exploredRegex = "(.*)(^E\\(0?1?[0-9],0?1?[0-9]\\)$)(.*)";
+            Pattern exploredPattern = Pattern.compile(exploredRegex);
+            Matcher exploredMatcher = exploredPattern.matcher(incomingMessage);
 
             //display obstacle with arrows
             TextView txtArrow = findViewById(R.id.txtArrow);
@@ -544,6 +553,27 @@ public class MainActivity extends AppCompatActivity {
                 TextView MDF2 = findViewById(R.id.txtMDF2);
                 MDF2.setText(MDF2Value);
 
+            } else if (exploredMatcher.find()) {
+                //compare and ensure that it is O(x,y)
+                Matcher matcher = Pattern.compile("[0-9]+").matcher(incomingMessage);
+                while (matcher.find()) {
+                    receivedCoordinates++;
+                    switch (receivedCoordinates) {
+                        case 1:
+                            exploredX = matcher.group();
+                            break;
+                        case 2:
+                            exploredY = matcher.group();
+                            break;
+
+                    }
+                    //reset to set the next explored point
+                    if (receivedCoordinates == 2) {
+                        receivedCoordinates = 0;
+
+                        displayExplored(exploredX, exploredY);
+                    }
+                }
             } else if (obstacleMatcher.find()) {
                 //compare and ensure that it is O(x,y)
                 Matcher matcher = Pattern.compile("[0-9]+").matcher(incomingMessage);
@@ -598,6 +628,15 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private void displayExplored(String exploredX, String exploredY) {
+        Drawable explored = this.getResources().getDrawable(R.drawable.explored);
+        int exploredPoint = -(((Integer.valueOf(exploredX) - 19) * 15) - Integer.valueOf(exploredY));
+        exploredTV = findViewById(exploredPoint);
+        exploredTV.setText("1");
+        exploredList.add(exploredPoint);
+
+    }
+
     private void displayObstacle(String obstacleX, String obstacleY, String obstacleArrow) {
         Drawable upImage = this.getResources().getDrawable(R.drawable.up);
         Drawable obstacleImage = this.getResources().getDrawable(R.drawable.obstacle);
@@ -619,6 +658,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             //without arrow
             op.setBackground(obstacleImage);
+            noArrowObstacles.add(obstaclePoint);
             Toast.makeText(getApplicationContext(), "Obstacle created at " + obstaclePoint, Toast.LENGTH_LONG).show();
         }
 
@@ -883,6 +923,7 @@ public class MainActivity extends AppCompatActivity {
         Drawable box = this.getResources().getDrawable(R.drawable.box);
         Drawable robot = this.getResources().getDrawable(R.drawable.robot);
         Drawable endpoint = this.getResources().getDrawable(R.drawable.endpoint);
+        Drawable obstacleImage = this.getResources().getDrawable(R.drawable.obstacle);
 
         Drawable upImage = this.getResources().getDrawable(R.drawable.up);
         Drawable downImage = this.getResources().getDrawable(R.drawable.down);
@@ -946,14 +987,19 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                 } else if (y == 12 || y == 13 || y == 14 || y == 27 || y == 28 || y == 29 || y == 42 || y == 43 || y == 44)
-                    boxID.setBackground(endpoint);
+                    t.setBackground(endpoint);
                 else if (arrowObstacles.contains(y)) {
-                    boxID.setBackground(upImage);
-                    boxID.setText("U");
-                    boxID.setTextColor(Color.parseColor("#FFFFFF"));
-                    boxID.setGravity(Gravity.CENTER);
-                } else
+                    t.setBackground(upImage);
+                    t.setText("U");
+                    t.setTextColor(Color.parseColor("#FFFFFF"));
+                    t.setGravity(Gravity.CENTER);
+                } else if (exploredList.contains(y))
+                    t.setBackgroundColor(Color.parseColor("#00FF00"));
+                else if (noArrowObstacles.contains(y))
+                    t.setBackground(obstacleImage);
+                else {
                     t.setBackground(box);
+                }
 
 
             } else if (waypointList != y && selectedWaypoint == true) {
@@ -1061,9 +1107,10 @@ public class MainActivity extends AppCompatActivity {
                         t.setTextColor(Color.parseColor("#FF0000"));
                     }
 
-                } else if (y == 12 || y == 13 || y == 14 || y == 27 || y == 28 || y == 29 || y == 42 || y == 43 || y == 44)
-                    boxID.setBackground(endpoint);
-                else {
+                } else if (y == 12 || y == 13 || y == 14 || y == 27 || y == 28 || y == 29 || y == 42 || y == 43 || y == 44) {
+                    t.setBackground(endpoint);
+                    t.setText("");
+                } else if (arrowObstacles.contains(y) == false && noArrowObstacles.contains(y) == false) {
                     t.setText("");
                     t.setBackground(box);
 
