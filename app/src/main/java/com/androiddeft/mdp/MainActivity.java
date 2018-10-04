@@ -576,7 +576,7 @@ public class MainActivity extends AppCompatActivity {
                                 if (arrowCoordinates == null)
                                     arrowCoordinates = "S(" + obstacleX + "," + obstacleY + "," + direction + ")";
                                 else
-                                    arrowCoordinates += " / S(" + obstacleX + "," + obstacleY + "," + direction + ")";
+                                    arrowCoordinates += " \r\nS(" + obstacleX + "," + obstacleY + "," + direction + ")";
 
                                 txtArrow.setText(arrowCoordinates);
                             }
