@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
     //obstacles
     int receivedCoordinates = 0;
+    ArrayList<Integer> arrowObstacles = new ArrayList<>();
 
     //mode
     Switch modeSwitch;
@@ -506,7 +507,8 @@ public class MainActivity extends AppCompatActivity {
             String obstacleY = null;
             String obstacleArrow = null;
             incomingMessage = intent.getStringExtra("incomingmsg");
-
+            Toast.makeText(getApplicationContext(), "Received: " + incomingMessage,
+                    Toast.LENGTH_SHORT).show();
             //obstacle regex
             String obstacleRegex = "(.*)(^O\\(0?1?[0-9],0?1?[0-9],([^0]|[^1]?)\\)$)(.*)";
             Pattern obstaclePattern = Pattern.compile(obstacleRegex);
@@ -593,25 +595,6 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             }
-
-
-//            else {
-//                String startCoord = "(.*)(^S\\(1?[0-9],1?[0-9]\\)$)(.*)";
-//                Pattern startPattern = Pattern.compile(startCoord);
-//                Matcher sp = startPattern.matcher(incomingMessage);
-//
-//                String waypointCoord = "(.*)(^W\\(1?[0-9],1?[0-9]\\)$)(.*)";
-//                Pattern waypointPattern = Pattern.compile(waypointCoord);
-//                Matcher wp = waypointPattern.matcher(incomingMessage);
-//
-//
-//                if (sp.find()) //eg: S(5,2) no spacing
-//                    Toast.makeText(getApplicationContext(), "Start coordinates Matched.", Toast.LENGTH_LONG).show();
-//                else if(wp.find()) //eg: W(5,2) no spacing
-//                    Toast.makeText(getApplicationContext(), "Waypoint coordinates Matched.", Toast.LENGTH_LONG).show();
-//                else
-//                    Toast.makeText(getApplicationContext(), "Fail to match.", Toast.LENGTH_LONG).show();
-//            }
         }
     };
 
@@ -631,6 +614,7 @@ public class MainActivity extends AppCompatActivity {
             op.setTextColor(Color.parseColor("#FFFFFF"));
             op.setGravity(Gravity.CENTER);
             obstacleCount++;
+            arrowObstacles.add(obstaclePoint);
             Toast.makeText(getApplicationContext(), "Obstacle arrow created at " + obstaclePoint, Toast.LENGTH_LONG).show();
         } else {
             //without arrow
@@ -963,7 +947,12 @@ public class MainActivity extends AppCompatActivity {
 
                 } else if (y == 12 || y == 13 || y == 14 || y == 27 || y == 28 || y == 29 || y == 42 || y == 43 || y == 44)
                     boxID.setBackground(endpoint);
-                else
+                else if (arrowObstacles.contains(y)) {
+                    boxID.setBackground(upImage);
+                    boxID.setText("U");
+                    boxID.setTextColor(Color.parseColor("#FFFFFF"));
+                    boxID.setGravity(Gravity.CENTER);
+                } else
                     t.setBackground(box);
 
 
