@@ -78,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
 
     //for obstacles
     ArrayList<Integer> obstacleList = new ArrayList<Integer>();
+    String arrowCoordinates;
+    String direction = null;
 
     String startingX = null;
     String startingY = null;
@@ -236,8 +238,12 @@ public class MainActivity extends AppCompatActivity {
                 stopTimer = false;
                 startTime = SystemClock.uptimeMillis();
                 customHandler.postDelayed(updateTimerThread, 0);
+                Intent messaging_intent = new Intent("outMsg");
+                messaging_intent.putExtra("outgoingmsg", "fastest");
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
                 start.setVisibility(View.GONE);
                 stop.setVisibility(View.VISIBLE);
+
 
             }
         });
@@ -264,6 +270,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+                Intent messaging_intent = new Intent("outMsg");
+                messaging_intent.putExtra("outgoingmsg", "explore");
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
                 stopTimer1 = false;
                 startTime1 = SystemClock.uptimeMillis();
                 customHandler.postDelayed(updateTimerThread1, 0);
@@ -514,6 +523,9 @@ public class MainActivity extends AppCompatActivity {
             Matcher MDF2Matcher = MDF2Pattern.matcher(incomingMessage);
 
 
+            //display obstacle with arrows
+            TextView txtArrow = findViewById(R.id.txtArrow);
+
             if (incomingMessage.equals("s") || incomingMessage.equals("d") || incomingMessage.equals("a"))
                 robotRotate(incomingMessage);
             else if (incomingMessage.equals("w"))
@@ -533,6 +545,20 @@ public class MainActivity extends AppCompatActivity {
             } else if (obstacleMatcher.find()) {
                 //compare and ensure that it is O(x,y)
                 Matcher matcher = Pattern.compile("[0-9]+").matcher(incomingMessage);
+                switch (currentDirection) {
+                    case "a":
+                        direction = "left";
+                        break;
+                    case "w":
+                        direction = "up";
+                        break;
+                    case "s":
+                        direction = "down";
+                        break;
+                    case "d":
+                        direction = "right";
+                        break;
+                }
                 while (matcher.find()) {
                     receivedCoordinates++;
                     switch (receivedCoordinates) {
@@ -545,6 +571,16 @@ public class MainActivity extends AppCompatActivity {
                         case 3:
                             obstacleArrow = matcher.group();
                             displayObstacle(obstacleX, obstacleY, obstacleArrow);
+
+                            if (obstacleArrow.equals("1")) {
+                                if (arrowCoordinates == null)
+                                    arrowCoordinates = "S(" + obstacleX + "," + obstacleY + "," + direction + ")";
+                                else
+                                    arrowCoordinates += " / S(" + obstacleX + "," + obstacleY + "," + direction + ")";
+
+                                txtArrow.setText(arrowCoordinates);
+                            }
+
                             break;
 
 
@@ -552,7 +588,7 @@ public class MainActivity extends AppCompatActivity {
                     //reset to set the next obstacle pointjm
                     if (receivedCoordinates == 3)
                         receivedCoordinates = 0;
-                    Toast.makeText(getApplicationContext(), "Obstacle:" + obstacleX + "," + obstacleY + "," + obstacleArrow, Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getApplicationContext(), "Obstacle:" + obstacleX + "," + obstacleY + "," + obstacleArrow, Toast.LENGTH_LONG).show();
 
 
                 }

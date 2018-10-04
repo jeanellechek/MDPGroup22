@@ -415,6 +415,27 @@
                     android:text="MDF2 string here"
                     android:textColor="#ffffff" />
 
+                <TextView
+                    android:id="@+id/arrowLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/mdf2Label"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="5dp"
+                    android:text="Arrows: "
+                    android:textColor="#ffffff" />
+
+                <TextView
+                    android:id="@+id/txtArrow"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/arrowLabel"
+                    android:layout_below="@+id/txtMDF2"
+                    android:layout_marginTop="5dp"
+                    android:inputType="text"
+                    android:text="Arrows string here"
+                    android:textColor="#ffffff" />
+
 
                 <RelativeLayout
                     android:id="@+id/refreshLayout"
