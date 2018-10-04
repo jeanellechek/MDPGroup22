@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
 
                             Intent messaging_intent = new Intent("outMsg");
-                            messaging_intent.putExtra("outgoingmsg", "pW(" + waypointXValue.getText().toString() + "," + waypointYValue.getText().toString() + ")");
+                            messaging_intent.putExtra("outgoingmsg", "pW_" + waypointXValue.getText().toString() + "," + waypointYValue.getText().toString());
                             LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
 
                         }
@@ -556,8 +556,6 @@ public class MainActivity extends AppCompatActivity {
 
 
                 }
-                //compare and ensure it is S(x,y)
-                //compare and ensure it is W(x,y)
             }
 
 
