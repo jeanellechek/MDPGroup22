@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
                         waypointXValue.setText("");
                         waypointYValue.setText("");
 
-                        waypointList.remove(view.getId());
+                        waypointList.clear();       
                         selectedWaypoint = false;
                         Toast.makeText(getApplicationContext(), "Waypoint coordinates removed.", Toast.LENGTH_LONG).show();
                     }
