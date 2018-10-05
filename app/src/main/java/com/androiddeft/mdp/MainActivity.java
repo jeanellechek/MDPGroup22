@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_RECONFIGURE_STRING = 1;
 
     //for waypoint
-    int waypointList;
+    ArrayList<Integer> waypointList = new ArrayList<>();
     TextView waypointXValue, waypointYValue;
 
     //for startpoint
@@ -185,11 +185,11 @@ public class MainActivity extends AppCompatActivity {
                             LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
 
                         }
-                        waypointList = point;
+                        waypointList.add(point);
                         selectedWaypoint = true;
-                    } else if (selectedWaypoint == true && waypointList == view.getId()) {
+                    } else if (selectedWaypoint == true && waypointList.contains(view.getId())) {
                         //remove waypoint
-                        TextView oldPoint = findViewById(waypointList);
+                        TextView oldPoint = findViewById(view.getId());
                         oldPoint.setBackground(box);
                         oldPoint.setText("");
                         waypointXValue = findViewById(R.id.waypointXValue);
@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
                         waypointXValue.setText("");
                         waypointYValue.setText("");
 
-                        waypointList = 0;
+                        waypointList.remove(view.getId());
                         selectedWaypoint = false;
                         Toast.makeText(getApplicationContext(), "Waypoint coordinates removed.", Toast.LENGTH_LONG).show();
                     }
@@ -630,7 +630,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void displayExplored(String exploredX, String exploredY) {
         Drawable explored = this.getResources().getDrawable(R.drawable.explored);
-        int exploredPoint = -(((Integer.valueOf(exploredX) - 19) * 15) - Integer.valueOf(exploredY));
+        int exploredPoint = -(((Integer.valueOf(exploredY) - 19) * 15) - Integer.valueOf(exploredX));
         exploredTV = findViewById(exploredPoint);
         exploredTV.setText("1");
         exploredList.add(exploredPoint);
@@ -852,7 +852,7 @@ public class MainActivity extends AppCompatActivity {
 
         for (int y = 0; y < 300; y++) {
             TextView t = findViewById(y);
-            if (waypointList != y) {
+            if (!waypointList.contains(y)) {
                 if (y == topLeftCorner || y == topLeftCorner + 1 || y == topLeftCorner + 2 || y == topLeftCorner + 15 || y == topLeftCorner + 16 || y == topLeftCorner + 17
                         || y == topLeftCorner + 30 || y == topLeftCorner + 31 || y == topLeftCorner + 32) {
                     if (y == topLeftCorner + 16) {
@@ -993,8 +993,7 @@ public class MainActivity extends AppCompatActivity {
                     t.setText("U");
                     t.setTextColor(Color.parseColor("#FFFFFF"));
                     t.setGravity(Gravity.CENTER);
-                } else if (exploredList.contains(y))
-                    t.setBackgroundColor(Color.parseColor("#00FF00"));
+                }
                 else if (noArrowObstacles.contains(y))
                     t.setBackground(obstacleImage);
                 else {
@@ -1002,7 +1001,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
-            } else if (waypointList != y && selectedWaypoint == true) {
+            } else if (!waypointList.contains(y) && selectedWaypoint == true) {
                 if (y == topLeftCorner || y == topLeftCorner + 1 || y == topLeftCorner + 2 || y == topLeftCorner + 15 || y == topLeftCorner + 16 || y == topLeftCorner + 17
                         || y == topLeftCorner + 30 || y == topLeftCorner + 31 || y == topLeftCorner + 32) {
                     //if (topLeftCorner + y < topLeftCorner + 3)
@@ -1030,7 +1029,12 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                 } else if (y == 12 || y == 13 || y == 14 || y == 27 || y == 28 || y == 29 || y == 42 || y == 43 || y == 44)
-                    boxID.setBackground(endpoint);
+                    t.setBackground(endpoint);
+                else if (arrowObstacles.contains(y)) {
+                    t.setBackground(upImage);
+                    t.setText("U");
+                } else if (noArrowObstacles.contains(y))
+                    t.setBackground(obstacleImage);
                 else
                     t.setBackground(box);
 
@@ -1080,7 +1084,7 @@ public class MainActivity extends AppCompatActivity {
         for (int y = 0; y < 300; y++) {
             TextView t = findViewById(y);
             //    t.setText(String.valueOf(y));
-            if (waypointList != y) {
+            if (!waypointList.contains(y)) {
                 if (y == topLeftCorner || y == topLeftCorner + 1 || y == topLeftCorner + 2 || y == topLeftCorner + 15 || y == topLeftCorner + 16 || y == topLeftCorner + 17
                         || y == topLeftCorner + 30 || y == topLeftCorner + 31 || y == topLeftCorner + 32) {
 
@@ -1117,10 +1121,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-
         }
 
     }
-
 
 }
