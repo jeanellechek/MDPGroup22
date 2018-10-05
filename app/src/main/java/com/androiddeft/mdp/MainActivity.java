@@ -558,12 +558,12 @@ public class MainActivity extends AppCompatActivity {
             else if (MDF1Matcher.find()) { //Eg: MDF1ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
                 MDF1Value = incomingMessage.substring(4, incomingMessage.length());
                 TextView MDF1 = findViewById(R.id.txtMDF1);
-                MDF1.setText(MDF1Value);
+                MDF1.setText("MDF1: " + MDF1Value);
 
             } else if (MDF2Matcher.find()) { //Eg: MDF2ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
                 MDF2Value = incomingMessage.substring(4, incomingMessage.length());
                 TextView MDF2 = findViewById(R.id.txtMDF2);
-                MDF2.setText(MDF2Value);
+                MDF2.setText("MDF2: " + MDF2Value);
 
             } else if (exploredMatcher.find()) {
                 //compare and ensure that it is O(x,y)

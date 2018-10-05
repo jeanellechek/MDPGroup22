@@ -389,7 +389,7 @@
             <RelativeLayout
                 android:id="@+id/controlsLayout"
                 android:layout_width="380dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_margin="5dp"
                 android:orientation="horizontal">
@@ -398,49 +398,32 @@
                     android:id="@+id/movementTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="240dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="180dp"
+                    android:layout_marginTop="5dp"
                     android:text="Ready"
                     android:textColor="#FFFFFF"
                     android:textSize="20dp" />
 
-                <TextView
-                    android:id="@+id/mdf1Label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/movementTextView"
-                    android:layout_marginLeft="20dp"
-                    android:text="MDF 1: "
-                    android:textColor="#ffffff" />
 
                 <TextView
                     android:id="@+id/txtMDF1"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/mdf1Label"
-                    android:layout_below="@+id/movementTextView"
-                    android:inputType="text"
-                    android:text="MDF1 string here"
-                    android:textColor="#ffffff" />
-
-                <TextView
-                    android:id="@+id/mdf2Label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/mdf1Label"
+                    android:layout_below="@+id/movementTextView"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginTop="5dp"
-                    android:text="MDF 2: "
+                    android:text="MDF1 string here"
+                    android:inputType="textMultiLine"
                     android:textColor="#ffffff" />
+
 
                 <TextView
                     android:id="@+id/txtMDF2"
-                    android:layout_width="200dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/mdf2Label"
                     android:layout_below="@+id/txtMDF1"
-                    android:layout_marginTop="5dp"
-                    android:inputType="text"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="22dp"
+                    android:inputType="textMultiLine"
                     android:text="MDF2 string here"
                     android:textColor="#ffffff" />
 
@@ -470,7 +453,7 @@
                         android:layout_width="250dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="50dp"
-                        android:layout_marginTop="100dp"
+                        android:layout_marginTop="120dp"
                         android:textColor="#ffffff"
                         android:inputType="text"
                         android:hint="Enter message"
@@ -480,7 +463,7 @@
                         android:id="@+id/sendButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="100dp"
+                        android:layout_marginTop="120dp"
                         android:layout_toRightOf="@+id/messageValue"
                         android:text="Send" />
                 </RelativeLayout>
