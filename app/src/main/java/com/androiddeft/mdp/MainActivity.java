@@ -126,6 +126,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Display starting coordinates
+        startXValue = findViewById(R.id.startXValue);
+        startYValue = findViewById(R.id.startYValue);
+
+
+        int xCoord = topLeftCorner % 15;
+        int yCoord = 19 - ((topLeftCorner - xCoord) / 15);
+
+        startXValue.setText(String.valueOf(xCoord));
+        startYValue.setText(String.valueOf(yCoord));
+
+
         GridLayout foreground = findViewById(R.id.gridMapLayout);
         final Drawable box = this.getResources().getDrawable(R.drawable.box);
         Drawable robot = this.getResources().getDrawable(R.drawable.robot);
@@ -197,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                         waypointXValue.setText("");
                         waypointYValue.setText("");
 
-                        waypointList.clear();       
+                        waypointList.clear();
                         selectedWaypoint = false;
                         Toast.makeText(getApplicationContext(), "Waypoint coordinates removed.", Toast.LENGTH_LONG).show();
                     }
