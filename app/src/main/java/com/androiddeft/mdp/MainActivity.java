@@ -1109,12 +1109,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
-        if (mdfstr1[1].toString().matches("^\\([0-9]?[0-9],[0-9]?[0-9],[AWSDawsd]\\)$")) {
+        if (mdfstr1[1].toString().matches("^\\([01][0-9],[01][0-9],[AWSDawsd]\\)")) {
             //ob(xx,yy,N/S/E/W,u)
             try {
-                int x1 = Integer.valueOf(mdfstr1[2].toString().substring(1, 3));
-                int y1 = Integer.valueOf(mdfstr1[2].toString().substring(4, 6));
-                String loc = mdfstr1[2].toString().substring(7, 8).toLowerCase();
+                int x1 = Integer.valueOf(mdfstr1[1].toString().substring(1, 3));
+                int y1 = Integer.valueOf(mdfstr1[1].toString().substring(4, 6));
+                String loc = mdfstr1[1].toString().substring(7, 8).toLowerCase();
                 int boxid;
                 //String arrow = tempMsg.substring(11, 12).toUpperCase();
                 if ((x1 > 12) && (y1 < 2)) {
