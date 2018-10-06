@@ -1,3 +1,5 @@
+//MDF
+
 package com.androiddeft.mdp;
 
 import android.app.Activity;
@@ -8,12 +10,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,6 +34,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -78,6 +83,9 @@ public class MainActivity extends AppCompatActivity {
     //for obstacles
     ArrayList<Integer> noArrowObstacles = new ArrayList<Integer>(); //without arrows
     ArrayList<Integer> arrowObstacles = new ArrayList<Integer>(); //with arrows
+    ArrayList<Integer> obstaclemap = new ArrayList<>(); //from p2
+    ArrayList<Integer> obstaclelist = new ArrayList<Integer>();
+
 
     int receivedCoordinates = 0;
     String arrowCoordinates;
@@ -119,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
     String exploredX = null;
     String exploredY = null;
     TextView exploredTV;
-    ArrayList<Integer> exploredList = new ArrayList<>();
+    ArrayList<Integer> exploredmap = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -239,79 +247,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        //Timer
-        start = findViewById(R.id.startButton);
-        stop = findViewById(R.id.stopButton);
-        time = findViewById(R.id.timerValue);
-        start.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                stopTimer = false;
-                startTime = SystemClock.uptimeMillis();
-                customHandler.postDelayed(updateTimerThread, 0);
-
-                topLeftCorner = 255;
-                currentDirection = "w";
-
-                robotStart();
-                Intent messaging_intent = new Intent("outMsg");
-                messaging_intent.putExtra("outgoingmsg", "fastest");
-                LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
-                start.setVisibility(View.GONE);
-                stop.setVisibility(View.VISIBLE);
-
-
-            }
-        });
-
-        stop.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                stopTimer = true;
-                customHandler.removeCallbacks(null);
-                stop.setVisibility(View.GONE);
-                start.setVisibility(View.VISIBLE);
-                start.setText("Restart");
-                time.setText("00:00:000");
-
-            }
-        });
-
-        //Exploration
-        start1 = findViewById(R.id.startButton1);
-        stop1 = findViewById(R.id.stopButton1);
-        time1 = findViewById(R.id.timerValue1);
-        start1.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                Intent messaging_intent = new Intent("outMsg");
-                messaging_intent.putExtra("outgoingmsg", "explore");
-                LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
-                stopTimer1 = false;
-                startTime1 = SystemClock.uptimeMillis();
-                customHandler.postDelayed(updateTimerThread1, 0);
-                start1.setVisibility(View.GONE);
-                stop1.setVisibility(View.VISIBLE);
-
-            }
-        });
-
-        stop1.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                stopTimer1 = true;
-                customHandler.removeCallbacks(null);
-                stop1.setVisibility(View.GONE);
-                start1.setVisibility(View.VISIBLE);
-                start1.setText("Restart");
-                time1.setText("00:00:000");
-
-            }
-        });
 
         //Auto or manual mode
         modeSwitch = findViewById(R.id.modeSwitch);
@@ -516,136 +451,132 @@ public class MainActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver2, new IntentFilter("inMsg"));
     }
 
+
     private final BroadcastReceiver mBroadcastReceiver2 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String obstacleX = null;
-            String obstacleY = null;
-            String obstacleArrow = null;
-            incomingMessage = intent.getStringExtra("incomingmsg");
-            Toast.makeText(getApplicationContext(), "Received: " + incomingMessage,
-                    Toast.LENGTH_SHORT).show();
+            String text = intent.getStringExtra("incomingmsg");
+            boolean isReceived = true;
+            String t1 = text;
+            String tempMsg = text.toLowerCase();
 
-            //obstacle regex
-            String obstacleRegex = "(.*)(^O\\(0?1?[0-9],0?1?[0-9],([^0]|[^1]?)\\)$)(.*)";
-            Pattern obstaclePattern = Pattern.compile(obstacleRegex);
-            Matcher obstacleMatcher = obstaclePattern.matcher(incomingMessage);
+            switch (tempMsg) {
+                case "a":
+                    tempMsg = "Left";
+                    robotRotate("a");
+                    break;
+                case "s":
+                    tempMsg = "Down";
+                    robotRotate(tempMsg);
+                    break;
+                case "d":
+                    tempMsg = "Right";
+                    robotRotate(tempMsg);
+                    break;
+                case "w":
+                    robotMovement();
+                    break;
+                case "clear":
+                    robotStart();
+                    break;
+                case "explore":
+                    robotExplore();
+                    break;
+                case "fastest":
+                    robotFastest();
+                    break;
+                case "stop":
+                    movementTextView.setText("Robot Stopped");
+                    break;
+                case "explore stop":
+                    exploreStop();
+                    break;
 
-            //MDF1 regex
-            String MDF1Regex = "(.*)(^MDF1)(.*)";
-            Pattern MDF1Pattern = Pattern.compile(MDF1Regex);
-            Matcher MDF1Matcher = MDF1Pattern.matcher(incomingMessage);
+                case "fastest stop":
+                    fastestStop();
+                    break;
+            }
+            if (t1 != null) {
+                char temp1 = t1.charAt(0);
 
-            //MDF2 regex
-            String MDF2Regex = "(.*)(^MDF2)(.*)";
-            Pattern MDF2Pattern = Pattern.compile(MDF2Regex);
-            Matcher MDF2Matcher = MDF2Pattern.matcher(incomingMessage);
 
-            //Explored regex
-            String exploredRegex = "(.*)(^E\\(0?1?[0-9],0?1?[0-9]\\)$)(.*)";
-            Pattern exploredPattern = Pattern.compile(exploredRegex);
-            Matcher exploredMatcher = exploredPattern.matcher(incomingMessage);
-
-            //display obstacle with arrows
-            TextView txtArrow = findViewById(R.id.txtArrow);
-
-            if (incomingMessage.equals("s") || incomingMessage.equals("d") || incomingMessage.equals("a"))
-                robotRotate(incomingMessage);
-            else if (incomingMessage.equals("w"))
-                robotMovement();
-            else if (incomingMessage.equals("stop"))
-                movementTextView.setText("Stopped");
-            else if (MDF1Matcher.find()) { //Eg: MDF1ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-                MDF1Value = incomingMessage.substring(4, incomingMessage.length());
-                TextView MDF1 = findViewById(R.id.txtMDF1);
-                MDF1.setText("MDF1: " + MDF1Value);
-
-            } else if (MDF2Matcher.find()) { //Eg: MDF2ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-                MDF2Value = incomingMessage.substring(4, incomingMessage.length());
-                TextView MDF2 = findViewById(R.id.txtMDF2);
-                MDF2.setText("MDF2: " + MDF2Value);
-
-            } else if (exploredMatcher.find()) {
-                //compare and ensure that it is O(x,y)
-                Matcher matcher = Pattern.compile("[0-9]+").matcher(incomingMessage);
-                while (matcher.find()) {
-                    receivedCoordinates++;
-                    switch (receivedCoordinates) {
-                        case 1:
-                            exploredX = matcher.group();
-                            break;
-                        case 2:
-                            exploredY = matcher.group();
-                            break;
-
-                    }
-                    //reset to set the next explored point
-                    if (receivedCoordinates == 2) {
-                        receivedCoordinates = 0;
-
-                        displayExplored(exploredX, exploredY);
-                    }
-                }
-            } else if (obstacleMatcher.find()) {
-                //compare and ensure that it is O(x,y)
-                Matcher matcher = Pattern.compile("[0-9]+").matcher(incomingMessage);
-                switch (currentDirection) {
-                    case "a":
-                        direction = "left";
+                switch (temp1) {
+                    case 'O':
+                        getArrowObstacleCoord(text);
                         break;
-                    case "w":
-                        direction = "up";
+
+                    case 'f':
+                        displayFinalMDF(t1);
                         break;
-                    case "s":
-                        direction = "down";
+                    case 't': //eg: t:f8007e00ff01fe03fc07f00ffc1ff83ffc7f00ee001c002000400000000000000007000e001f:(00,00,A):100000000010000000011c0000
+                        tempMsg = t1.substring(2, t1.length());
+                        mapDecoder(tempMsg);
                         break;
-                    case "d":
-                        direction = "right";
-                        break;
-                }
-                while (matcher.find()) {
-                    receivedCoordinates++;
-                    switch (receivedCoordinates) {
-                        case 1:
-                            obstacleX = matcher.group();
-                            break;
-                        case 2:
-                            obstacleY = matcher.group();
-                            break;
-                        case 3:
-                            obstacleArrow = matcher.group();
-                            displayObstacle(obstacleX, obstacleY, obstacleArrow);
-
-                            if (obstacleArrow.equals("1")) {
-                                if (arrowCoordinates == null)
-                                    arrowCoordinates = "S(" + obstacleX + "," + obstacleY + "," + direction + ")";
-                                else
-                                    arrowCoordinates += " \r\nS(" + obstacleX + "," + obstacleY + "," + direction + ")";
-
-                                txtArrow.setText(arrowCoordinates);
-                            }
-
-                            break;
-
-
-                    }
-                    //reset to set the next obstacle pointjm
-                    if (receivedCoordinates == 3)
-                        receivedCoordinates = 0;
-//                    Toast.makeText(getApplicationContext(), "Obstacle:" + obstacleX + "," + obstacleY + "," + obstacleArrow, Toast.LENGTH_LONG).show();
-
-
                 }
             }
         }
     };
+
+    private void displayFinalMDF(String t1) {
+        String tempMsg = t1;
+        String[] mdfstr = tempMsg.split(":");
+        String MDFString1 = mdfstr[1].toString();
+        String MDFString2 = mdfstr[2].toString();
+
+        TextView MDF1 = findViewById(R.id.txtMDF1);
+        TextView MDF2 = findViewById(R.id.txtMDF2);
+        MDF1.setText("MDF1:" + MDFString1);
+        MDF2.setText("MDF2:" + MDFString2);
+    }
+
+    private void fastestStop() {
+        stopTimer1 = true;
+        customHandler.removeCallbacks(null);
+        stop1.setVisibility(View.GONE);
+        start1.setVisibility(View.VISIBLE);
+        start1.setText("Restart");
+        time1.setText("00:00:000");
+    }
+
+    private void exploreStop() {
+        stopTimer = true;
+        customHandler.removeCallbacks(null);
+        stop.setVisibility(View.GONE);
+        start.setVisibility(View.VISIBLE);
+        start.setText("Restart");
+        time.setText("00:00:000");
+    }
+
+    private void robotFastest() {
+        stopTimer = false;
+        startTime = SystemClock.uptimeMillis();
+        customHandler.postDelayed(updateTimerThread1, 0);
+
+        Intent messaging_intent = new Intent("outMsg");
+        messaging_intent.putExtra("outgoingmsg", "fastest");
+        LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
+        start.setVisibility(View.GONE);
+        stop.setVisibility(View.VISIBLE);
+    }
+
+    private void robotExplore() {
+        stopTimer1 = false;
+        startTime1 = SystemClock.uptimeMillis();
+        customHandler.postDelayed(updateTimerThread, 0);
+        Intent messaging_intent = new Intent("outMsg");
+        messaging_intent.putExtra("outgoingmsg", "explore");
+        LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
+        start.setVisibility(View.GONE);
+        stop.setVisibility(View.VISIBLE);
+    }
+
 
     private void displayExplored(String exploredX, String exploredY) {
         Drawable explored = this.getResources().getDrawable(R.drawable.explored);
         int exploredPoint = -(((Integer.valueOf(exploredY) - 19) * 15) - Integer.valueOf(exploredX));
         exploredTV = findViewById(exploredPoint);
         exploredTV.setText("1");
-        exploredList.add(exploredPoint);
+        exploredmap.add(exploredPoint);
 
     }
 
@@ -1005,8 +936,7 @@ public class MainActivity extends AppCompatActivity {
                     t.setText("U");
                     t.setTextColor(Color.parseColor("#FFFFFF"));
                     t.setGravity(Gravity.CENTER);
-                }
-                else if (noArrowObstacles.contains(y))
+                } else if (noArrowObstacles.contains(y))
                     t.setBackground(obstacleImage);
                 else {
                     t.setBackground(box);
@@ -1055,6 +985,254 @@ public class MainActivity extends AppCompatActivity {
 
         }
         movementTextView.setText("Moved " + currentDirection);
+    }
+
+    protected void setRobot(int boxid, String direction) {
+        Drawable box = this.getResources().getDrawable(R.drawable.box);
+        Drawable robotImage = this.getResources().getDrawable(R.drawable.robot);
+        Drawable endpoint = this.getResources().getDrawable(R.drawable.endpoint);
+
+        Drawable upImage = this.getResources().getDrawable(R.drawable.up);
+        Drawable downImage = this.getResources().getDrawable(R.drawable.down);
+        Drawable leftImage = this.getResources().getDrawable(R.drawable.left);
+        Drawable rightImage = this.getResources().getDrawable(R.drawable.right);
+
+        topLeftCorner = boxid;
+        for (int i = 0; i < 300; i++) {
+            TextView t = findViewById(i);
+            if (i == topLeftCorner || i == topLeftCorner + 1 || i == topLeftCorner + 2 || i == topLeftCorner + 15 || i == topLeftCorner + 16 || i == topLeftCorner + 17
+                    || i == topLeftCorner + 30 || i == topLeftCorner + 31 || i == topLeftCorner + 32) {
+                if (i == topLeftCorner) {
+                    t.setText("");
+                    switch (direction) {
+                        case "w":
+                            t.setBackground(upImage);
+                            currentDirection = "w";
+                            break;
+                        case "s":
+                            t.setBackground(downImage);
+                            currentDirection = "s";
+                            break;
+                        case "a":
+                            t.setBackground(leftImage);
+                            currentDirection = "a";
+                            break;
+                        case "d":
+                            t.setBackground(rightImage);
+                            currentDirection = "d";
+                            break;
+                    }
+                }
+                if (i == topLeftCorner + 16) {
+                    switch (currentDirection) {
+                        case "w":
+                            t.setBackground(upImage);
+                            break;
+                        case "a":
+                            t.setBackground(leftImage);
+                            break;
+                        case "s":
+                            t.setBackground(downImage);
+                            break;
+                        case "d":
+                            t.setBackground(rightImage);
+                            break;
+                    }
+                    t.setText("");
+                } else {
+                    t.setBackground(robotImage);
+                    t.setText("1");
+                    t.setTextColor(Color.parseColor("#FF0000"));
+                }
+            }
+        }
+    }
+
+
+    protected void mapDecoder(String msg) {
+        obstaclelist.clear();
+        exploredmap.clear();
+        obstaclemap.clear();
+
+        Drawable box = this.getResources().getDrawable(R.drawable.box);
+        Drawable robotImage = this.getResources().getDrawable(R.drawable.robot);
+        Drawable endpoint = this.getResources().getDrawable(R.drawable.endpoint);
+        Drawable obstacleImage = this.getResources().getDrawable(R.drawable.obstacle);
+
+        Drawable upImage = this.getResources().getDrawable(R.drawable.up);
+        Drawable downImage = this.getResources().getDrawable(R.drawable.down);
+        Drawable leftImage = this.getResources().getDrawable(R.drawable.left);
+        Drawable rightImage = this.getResources().getDrawable(R.drawable.right);
+
+
+        String tempMsg = msg;
+        String[] mdfstr1 = tempMsg.split(":");
+        String bin = new BigInteger(mdfstr1[0].toString(), 16).toString(2);
+        String robot = mdfstr1[1].toString();
+        for (int temp = 2; temp < bin.length() - 2; temp++) {
+            exploredmap.add(Integer.parseInt(bin.substring(temp, temp + 1)));
+            //Log.d(TAG, mapdata.get(temp).toString());
+        }
+        String string = "";
+        for (int temp = 0; temp < exploredmap.size(); temp++) {
+            string += exploredmap.get(temp).toString();
+        }
+        //editmsg.setText(string);
+        int counter = 0;
+        for (int y = 19; y >= 0; y--) {
+            for (int x = 0; x < 15; x++) {
+                int boxid = (y * 15) + x;
+                TextView t2 = findViewById(boxid);
+                if (exploredmap.get(counter).toString().equals("0")) {
+                    t2.setText(exploredmap.get(counter).toString());
+                    t2.setBackground(box);
+                    t2.setTextColor(Color.parseColor("#000000"));
+                    t2.setTag("Unknown");
+                    t2.setTypeface(null, Typeface.NORMAL);
+                } else {
+                    t2.setBackground(robotImage);
+                    t2.setText(exploredmap.get(counter).toString());
+                    t2.setTextColor(Color.parseColor("#000000"));
+                    t2.setTag("Explored");
+                    t2.setTypeface(null, Typeface.NORMAL);
+                }
+                counter++;
+
+                if (boxid == 12 || boxid == 13 || boxid == 14 || boxid == 27 || boxid == 28 || boxid == 29 || boxid == 42 || boxid == 43 || boxid == 44) {
+                    t2.setBackground(endpoint);
+                }
+                if (arrowObstacles.contains((boxid))) {
+                    t2.setBackground(upImage);
+                    t2.setText("U");
+                    t2.setTextColor(Color.parseColor("#FFFFFF"));
+                }
+            }
+
+        }
+        if (mdfstr1[1].toString().matches("^\\([0-9]?[0-9],[0-9]?[0-9],[AWSDawsd]\\)$")) {
+            //ob(xx,yy,N/S/E/W,u)
+            try {
+                int x1 = Integer.valueOf(mdfstr1[2].toString().substring(1, 3));
+                int y1 = Integer.valueOf(mdfstr1[2].toString().substring(4, 6));
+                String loc = mdfstr1[2].toString().substring(7, 8).toLowerCase();
+                int boxid;
+                //String arrow = tempMsg.substring(11, 12).toUpperCase();
+                if ((x1 > 12) && (y1 < 2)) {
+                    boxid = ((19 - 2) * 15) + 12;
+                } else if ((x1 > 12) && (y1 >= 2)) {
+                    boxid = ((19 - y1) * 15) + 12;
+                } else if ((x1 <= 12) && (y1 < 2)) {
+                    boxid = ((19 - 2) * 15) + x1;
+                } else {
+                    boxid = ((19 - y1) * 15) + x1;
+                }
+                setRobot(boxid, loc);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+
+        String bin1 = new BigInteger(mdfstr1[2].toString(), 16).toString(2);
+        Log.d(TAG, bin1);
+
+        for (int temp = 1; temp < bin1.length(); temp++) {
+            obstaclemap.add(Integer.parseInt(bin1.substring(temp, temp + 1)));
+            //Log.d(TAG, mapdata.get(temp).toString());
+        }
+        String string1 = "";
+        for (int temp = 0; temp < obstaclemap.size(); temp++) {
+            string1 += obstaclemap.get(temp).toString();
+        }
+        Log.d(TAG, String.valueOf(string1));
+        int tempint = 0;
+        for (int i = 0; i < exploredmap.size(); i++) {
+            //Log.d(TAG, exploredmap.get(i).toString());
+            if (exploredmap.get(i).toString().equals("1") && exploredmap.get(i).toString().equals(obstaclemap.get(tempint).toString())) {
+                int tempx = i % 15;
+                int tempy = 19 - ((i - tempx) / 15);
+                int tempyboxid = (tempy * 15) + tempx;
+                obstaclelist.add(tempyboxid);
+                if (tempint < obstaclemap.size()) {
+                    tempint++;
+                }
+            } else if ((exploredmap.get(i).toString().equals("1") && obstaclemap.get(tempint).toString().equals("0"))) {
+                if (tempint < obstaclemap.size()) {
+                    tempint++;
+                }
+            }
+        }
+        for (int i = 0; i < 300; i++) {
+            TextView t3 = findViewById(i);
+            for (int j = 0; j < obstaclelist.size(); j++) {
+                if (i == obstaclelist.get(j)) {
+                    t3.setBackground(obstacleImage);
+                }
+            }
+        }
+    }
+
+    public void getArrowObstacleCoord(String text) {
+
+        //obstacle regex
+        String obstacleRegex = "(.*)(^O\\(0?1?[0-9],0?1?[0-9],([^0]|[^1]?)\\)$)(.*)";
+        Pattern obstaclePattern = Pattern.compile(obstacleRegex);
+        Matcher obstacleMatcher = obstaclePattern.matcher(text);
+        String obstacleX = null;
+        String obstacleY = null;
+        String obstacleArrow = null;
+
+        if (obstacleMatcher.find()) {
+            //ob(xx,yy,N/S/E/W,u)
+            try {
+                Matcher matcher = Pattern.compile("[0-9]+").matcher(text);
+                switch (currentDirection) {
+                    case "a":
+                        direction = "left";
+                        break;
+                    case "w":
+                        direction = "up";
+                        break;
+                    case "s":
+                        direction = "down";
+                        break;
+                    case "d":
+                        direction = "right";
+                        break;
+                }
+                while (matcher.find()) {
+                    receivedCoordinates++;
+                    switch (receivedCoordinates) {
+                        case 1:
+                            obstacleX = matcher.group();
+                            break;
+                        case 2:
+                            obstacleY = matcher.group();
+                            break;
+                        case 3:
+                            obstacleArrow = matcher.group();
+                            displayObstacle(obstacleX, obstacleY, obstacleArrow);
+
+                            if (obstacleArrow.equals("1")) {
+                                if (arrowCoordinates == null)
+                                    arrowCoordinates = "S(" + obstacleX + "," + obstacleY + "," + direction + ")";
+                                else
+                                    arrowCoordinates += " \r\nS(" + obstacleX + "," + obstacleY + "," + direction + ")";
+                                TextView txtArrow = findViewById(R.id.txtArrow);
+                                txtArrow.setText(arrowCoordinates);
+                            }
+
+                            break;
+
+
+                    }
+                    //reset to set the next obstacle pointjm
+                    if (receivedCoordinates == 3)
+                        receivedCoordinates = 0;
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void robotStart() {
@@ -1136,5 +1314,4 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
 }
