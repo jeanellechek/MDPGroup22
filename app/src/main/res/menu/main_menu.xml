@@ -11,10 +11,6 @@
         android:title="Connect to device"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/disconnect"
-        android:title="Disconnect"
-        app:showAsAction="never" />
 
     <item
         android:id="@+id/command"

@@ -280,6 +280,10 @@ public class BluetoothConnectionService {
     private void connected(BluetoothSocket mmSocket, BluetoothDevice mmDevice) {
         Log.d(TAG, "connected: Starting.");
 
+        Intent messaging_intent = new Intent("bluetoothStatus");
+        messaging_intent.putExtra("bluetooth", "Connected");
+        LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
+
         // Start the thread to manage the connection and perform transmissions
         mConnectedThread = new ConnectedThread(mmSocket);
         mConnectedThread.start();

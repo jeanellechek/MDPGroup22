@@ -472,6 +472,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver2, new IntentFilter("inMsg"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver6, new IntentFilter("bluetoothStatus"));
     }
 
 
@@ -544,6 +545,13 @@ public class MainActivity extends AppCompatActivity {
                         break;
                 }
             }
+        }
+    };
+    private final BroadcastReceiver mBroadcastReceiver6 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String text = intent.getStringExtra("bluetooth");
+            getSupportActionBar().setSubtitle(text);
         }
     };
 
@@ -957,9 +965,10 @@ public class MainActivity extends AppCompatActivity {
                         t.setTextColor(Color.parseColor("#FF0000"));
                     }
 
-                } else if (y == 12 || y == 13 || y == 14 || y == 27 || y == 28 || y == 29 || y == 42 || y == 43 || y == 44)
+                } else if (y == 12 || y == 13 || y == 14 || y == 27 || y == 28 || y == 29 || y == 42 || y == 43 || y == 44) {
                     t.setBackground(endpoint);
-                else if (arrowObstacles.contains(y)) {
+                    t.setText("");
+                } else if (arrowObstacles.contains(y)) {
                     t.setBackground(upImage);
                     t.setText("U");
                     t.setTextColor(Color.parseColor("#FFFFFF"));
@@ -1017,9 +1026,10 @@ public class MainActivity extends AppCompatActivity {
                         t.setTextColor(Color.parseColor("#FF0000"));
                     }
 
-                } else if (y == 12 || y == 13 || y == 14 || y == 27 || y == 28 || y == 29 || y == 42 || y == 43 || y == 44)
+                } else if (y == 12 || y == 13 || y == 14 || y == 27 || y == 28 || y == 29 || y == 42 || y == 43 || y == 44) {
                     t.setBackground(endpoint);
-                else if (arrowObstacles.contains(y)) {
+                    t.setText("");
+                } else if (arrowObstacles.contains(y)) {
                     t.setBackground(upImage);
                     t.setText("U");
                 } else if (noArrowObstacles.contains(y))
@@ -1147,6 +1157,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (boxid == 12 || boxid == 13 || boxid == 14 || boxid == 27 || boxid == 28 || boxid == 29 || boxid == 42 || boxid == 43 || boxid == 44) {
                     t2.setBackground(endpoint);
+                    t2.setText("");
                 }
 
                 for (int i = 0; i < arrowObstacles.size(); i++) {
@@ -1331,7 +1342,6 @@ public class MainActivity extends AppCompatActivity {
 
         for (int y = 0; y < 300; y++) {
             TextView t = findViewById(y);
-            //    t.setText(String.valueOf(y));
             if (!waypointList.contains(y)) {
                 if (y == topLeftCorner || y == topLeftCorner + 1 || y == topLeftCorner + 2 || y == topLeftCorner + 15 || y == topLeftCorner + 16 || y == topLeftCorner + 17
                         || y == topLeftCorner + 30 || y == topLeftCorner + 31 || y == topLeftCorner + 32) {
@@ -1365,6 +1375,11 @@ public class MainActivity extends AppCompatActivity {
                 } else if (noArrowObstacles.contains(y) == true) //checking of obstacles with no arrows
                     t.setBackground(obstacleImage);
                 else { //checking for obstacles with arrows
+                    if (arrowObstacles.size() == 0) {
+                        t.setText("");
+                        t.setBackground(box);
+                    }
+
                     for (int i = 0; i < arrowObstacles.size(); i++) {
                         String[] arrowsBoxID = arrowObstacles.get(i).split("/");
                         if (y == Integer.parseInt(arrowsBoxID[0])) {
