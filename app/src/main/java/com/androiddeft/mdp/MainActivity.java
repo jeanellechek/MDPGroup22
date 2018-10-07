@@ -131,10 +131,12 @@ public class MainActivity extends AppCompatActivity {
     TextView exploredTV;
     ArrayList<Integer> exploredmap = new ArrayList<>();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().setSubtitle("Not Connected");
 
         //Display starting coordinates
         startXValue = findViewById(R.id.startXValue);
@@ -221,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
 
                         waypointList.clear();
                         selectedWaypoint = false;
-                        Toast.makeText(getApplicationContext(), "Waypoint coordinates removed.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Waypoint coordinates removed.", Toast.LENGTH_SHORT).show();
                     }
 
 
@@ -280,13 +282,13 @@ public class MainActivity extends AppCompatActivity {
                     obstacleInstruction.clear();
 
                     refresh.setVisibility(View.INVISIBLE);
-                    Toast.makeText(getApplicationContext(), "In auto mode", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "In auto mode", Toast.LENGTH_SHORT).show();
 
                 } else {
                     // The toggle is disabled
                     autoMode = false;
                     refresh.setVisibility(View.VISIBLE);
-                    Toast.makeText(getApplicationContext(), "In manual mode", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "In manual mode", Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -315,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
                         getArrowObstacleCoord(obstacleInstruction.get(i));
                 obstacleInstruction.clear();
 
-                Toast.makeText(getApplicationContext(), "Refreshed.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Refreshed.", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -626,7 +628,7 @@ public class MainActivity extends AppCompatActivity {
             op.setGravity(Gravity.CENTER);
             obstacleCount++;
             arrowObstacles.add(obstaclePoint + "/" + obstacleArrow);
-            Toast.makeText(getApplicationContext(), "Obstacle arrow created at " + obstaclePoint, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Obstacle arrow created at " + obstaclePoint, Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -659,6 +661,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, commandActivity.class));
                 break;
 
+
         }
         return true;
     }
@@ -685,27 +688,28 @@ public class MainActivity extends AppCompatActivity {
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
                 switch (state) {
                     case BluetoothAdapter.STATE_ON:
-                        Toast.makeText(getApplicationContext(), "Bluetooth is on", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Bluetooth is on", Toast.LENGTH_SHORT).show();
                         break;
                     case BluetoothAdapter.STATE_TURNING_ON:
-                        Toast.makeText(getApplicationContext(), "Bluetooth is turning on", Toast.LENGTH_LONG).show();
-                        Toast.makeText(getApplicationContext(), "Bluetooth is turning on", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Bluetooth is turning on", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Bluetooth is turning on", Toast.LENGTH_SHORT).show();
                         break;
                     case BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE:
-                        Toast.makeText(getApplicationContext(), "Bluetooth is visible to other devices  ", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Bluetooth is visible to other devices  ", Toast.LENGTH_SHORT).show();
                         break;
                 }
 
 
             }
             if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
-
+                getSupportActionBar().setSubtitle("Connected");
 
             } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
-
                 //test using AMD
+                getSupportActionBar().setSubtitle("Not Connected");
                 Intent reconnect_Intent = new Intent("reconnectMsg");
                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(reconnect_Intent);
+
             }
         }
     };
@@ -718,7 +722,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected void BluetoothOn() {
         if (myBluetoothAdapter == null) {
-            Toast.makeText(getApplicationContext(), "Bluetooth does not support on this device", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Bluetooth does not support on this device", Toast.LENGTH_SHORT).show();
         } else {
             if (!myBluetoothAdapter.isEnabled()) {
                 Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -735,7 +739,7 @@ public class MainActivity extends AppCompatActivity {
         if (!myBluetoothAdapter.isEnabled()) {
             BluetoothOn();
         }
-        Toast.makeText(getApplicationContext(), "Making device discoverable for 300 seconds.", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Making device discoverable for 300 seconds.", Toast.LENGTH_SHORT).show();
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
         startActivity(discoverableIntent);

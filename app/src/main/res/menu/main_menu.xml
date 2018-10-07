@@ -12,6 +12,11 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/disconnect"
+        android:title="Disconnect"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/command"
         android:title="Configure command"
         app:showAsAction="never" />
