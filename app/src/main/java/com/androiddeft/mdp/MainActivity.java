@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> arrowObstacles = new ArrayList<String>(); //with arrows
     ArrayList<Integer> obstaclemap = new ArrayList<>(); //from p2
     ArrayList<Integer> obstaclelist = new ArrayList<Integer>();
+    ArrayList<String> obstacleInstruction = new ArrayList<String>();
 
 
     int receivedCoordinates = 0;
@@ -122,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
     Switch modeSwitch;
     boolean autoMode = true;
     ArrayList<String> manualList = new ArrayList<String>();
+    ArrayList<String> InstructionList = new ArrayList<String>();
 
     //explored
     String exploredX = null;
@@ -267,6 +269,15 @@ public class MainActivity extends AppCompatActivity {
                     //clear
                     manualList.clear();
 
+                    if (InstructionList != null)
+                        for (int i = 0; i < InstructionList.size(); i++)
+                            mapDecoder(InstructionList.get(i));
+                    InstructionList.clear();
+
+                    if (obstacleInstruction != null)
+                        for (int i = 0; i < obstacleInstruction.size(); i++)
+                            getArrowObstacleCoord(obstacleInstruction.get(i));
+                    obstacleInstruction.clear();
 
                     refresh.setVisibility(View.INVISIBLE);
                     Toast.makeText(getApplicationContext(), "In auto mode", Toast.LENGTH_LONG).show();
@@ -293,6 +304,16 @@ public class MainActivity extends AppCompatActivity {
                 }
                 //clear
                 manualList.clear();
+
+                if (InstructionList != null)
+                    for (int i = 0; i < InstructionList.size(); i++)
+                        mapDecoder(InstructionList.get(i));
+                InstructionList.clear();
+
+                if (obstacleInstruction != null)
+                    for (int i = 0; i < obstacleInstruction.size(); i++)
+                        getArrowObstacleCoord(obstacleInstruction.get(i));
+                obstacleInstruction.clear();
 
                 Toast.makeText(getApplicationContext(), "Refreshed.", Toast.LENGTH_LONG).show();
 
@@ -502,7 +523,10 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (temp1) {
                     case 'O': //eg: O(X,y,AWSDawsd)
-                        getArrowObstacleCoord(text);
+                        if (autoMode == false)
+                            obstacleInstruction.add(text);
+                        else
+                            getArrowObstacleCoord(text);
                         break;
 
                     case 'f':
@@ -511,7 +535,10 @@ public class MainActivity extends AppCompatActivity {
                     case 't': //eg: t:f8007e00ff01fe03fc07f00ffc1ff83ffc7f00ee001c002000400000000000000007000e001f:(00,00,A):100000000010000000011c0000
                         tempMsg = t1.substring(2, t1.length());
                         noArrowObstacles.clear();
-                        mapDecoder(tempMsg);
+                        if (autoMode == false)
+                            InstructionList.add(tempMsg);
+                        else
+                            mapDecoder(tempMsg);
                         break;
                 }
             }
