@@ -303,7 +303,7 @@
                 <RelativeLayout
                     android:id="@+id/arrowsLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
+                    android:layout_height="wrap_content"
                     android:layout_below="@+id/modeLayout"
                     android:layout_marginTop="5dp"
                     android:layout_marginLeft="5dp"
@@ -329,6 +329,16 @@
                         android:textColor="#ffffff" />
 
                 </RelativeLayout>
+
+                <Button
+                    android:id="@+id/refreshButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+                    android:layout_below="@+id/arrowsLayout"
+                    android:layout_marginBottom="0dp"
+                    android:layout_marginLeft="15dp"
+                    android:text="Refresh" />
 
             </RelativeLayout>
 
@@ -426,22 +436,6 @@
                     android:inputType="textMultiLine"
                     android:text="MDF2 string here"
                     android:textColor="#ffffff" />
-
-                <RelativeLayout
-                    android:id="@+id/refreshLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/movementTextView">
-
-                <Button
-                    android:id="@+id/refreshButton"
-                    android:layout_width="250dp"
-                    android:layout_height="45dp"
-                    android:layout_marginLeft="150dp"
-                    android:visibility="invisible"
-                    android:text="Refresh" />
-
-                </RelativeLayout>
 
 
                 <RelativeLayout

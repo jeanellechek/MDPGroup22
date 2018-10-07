@@ -501,7 +501,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                 switch (temp1) {
-                    case 'O':
+                    case 'O': //eg: O(X,y,AWSDawsd)
                         getArrowObstacleCoord(text);
                         break;
 
@@ -589,9 +589,9 @@ public class MainActivity extends AppCompatActivity {
         int obstaclePoint = -(((obstacleYValue - 19) * 15) - obstacleXValue);
         TextView op = findViewById(obstaclePoint);
 
-        if (obstacleArrow.equals("1") && obstacleCount <= 5) {
+        if (obstacleArrow != null && obstacleCount <= 5) {
             //with arrow
-            op.setText("U");
+            op.setText(obstacleArrow);
             op.setBackground(upImage);
             op.setTextColor(Color.parseColor("#FFFFFF"));
             op.setGravity(Gravity.CENTER);
@@ -1174,7 +1174,7 @@ public class MainActivity extends AppCompatActivity {
     public void getArrowObstacleCoord(String text) {
 
         //obstacle regex
-        String obstacleRegex = "(.*)(^O\\(0?1?[0-9],0?1?[0-9],([^0]|[^1]?)\\)$)(.*)";
+        String obstacleRegex = "(.*)(^O\\(0?1?[0-9],0?1?[0-9],[AWSDawsd]\\)$)(.*)";
         Pattern obstaclePattern = Pattern.compile(obstacleRegex);
         Matcher obstacleMatcher = obstaclePattern.matcher(text);
         String obstacleX = null;
@@ -1184,7 +1184,8 @@ public class MainActivity extends AppCompatActivity {
         if (obstacleMatcher.find()) {
             //ob(xx,yy,N/S/E/W,u)
             try {
-                Matcher matcher = Pattern.compile("[0-9]+").matcher(text);
+
+                Matcher matcher = Pattern.compile("[0-9A-za-z]+").matcher(text.substring(1, text.length()));
                 switch (currentDirection) {
                     case "a":
                         direction = "left";
@@ -1210,13 +1211,14 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         case 3:
                             obstacleArrow = matcher.group();
-                            displayObstacle(obstacleX, obstacleY, obstacleArrow);
+                            if (obstacleCount <= 5)
+                                displayObstacle(obstacleX, obstacleY, obstacleArrow);
 
-                            if (obstacleArrow.equals("1")) {
+                            if (obstacleArrow != null) {
                                 if (arrowCoordinates == null)
-                                    arrowCoordinates = "S(" + obstacleX + "," + obstacleY + "," + direction + ")";
-                                else
-                                    arrowCoordinates += " \r\nS(" + obstacleX + "," + obstacleY + "," + direction + ")";
+                                    arrowCoordinates = "S(" + obstacleX + "," + obstacleY + "," + obstacleArrow + ")";
+                                else if (obstacleArrow != null && obstacleCount <= 5)
+                                    arrowCoordinates += " \r\nS(" + obstacleX + "," + obstacleY + "," + obstacleArrow + ")";
                                 TextView txtArrow = findViewById(R.id.txtArrow);
                                 txtArrow.setText(arrowCoordinates);
                             }
