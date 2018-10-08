@@ -611,7 +611,7 @@ public class MainActivity extends AppCompatActivity {
                     case 'f':
                         displayFinalMDF(t1);
                         break;
-                    case 't': //eg: t:f8007e00ff01fe03fc07f00ffc1ff83ffc7f00ee001c002000400000000000000007000e001f:(00,00,W):100000000010000000011c0000
+                    case 't': //eg: t:f8007e00ff01fe03fc07f00ffc1ff83ffc7f00ee001c002000400000000000000007000e001f:(00,00,W):00000000010000000011c0000
                         tempMsg = t1.substring(2, t1.length());
                         obstaclelist.clear();
                         if (autoMode == false)
@@ -1023,6 +1023,7 @@ public class MainActivity extends AppCompatActivity {
         Drawable robotImage = this.getResources().getDrawable(R.drawable.robot);
         Drawable endpoint = this.getResources().getDrawable(R.drawable.endpoint);
         Drawable waypointImage = this.getResources().getDrawable(R.drawable.waypoint);
+        Drawable obstacleArrowImage = this.getResources().getDrawable(R.drawable.obstaclearrow);
 
         Drawable upImage = this.getResources().getDrawable(R.drawable.up);
         Drawable downImage = this.getResources().getDrawable(R.drawable.down);
@@ -1032,6 +1033,7 @@ public class MainActivity extends AppCompatActivity {
         topLeftCorner = boxid;
         for (int i = 0; i < 300; i++) {
             TextView t = findViewById(i);
+
             if (i == topLeftCorner || i == topLeftCorner + 1 || i == topLeftCorner + 2 || i == topLeftCorner + 15 || i == topLeftCorner + 16 || i == topLeftCorner + 17
                     || i == topLeftCorner + 30 || i == topLeftCorner + 31 || i == topLeftCorner + 32) {
                 if (i == topLeftCorner) {
@@ -1086,6 +1088,15 @@ public class MainActivity extends AppCompatActivity {
                     t.setBackground(waypointImage);
                     t.setText("W");
                 }
+            }
+            for (int v = 0; v < arrowObstacles.size(); v++) {
+                String[] arrowsBoxID = arrowObstacles.get(v).split("/");
+                if (i == Integer.parseInt(arrowsBoxID[0])) {
+                    t.setBackground(obstacleArrowImage);
+                    t.setTextColor(Color.parseColor("#000000"));
+                    t.setText(arrowsBoxID[1].toUpperCase());
+                }
+
             }
         }
     }
@@ -1164,8 +1175,15 @@ public class MainActivity extends AppCompatActivity {
         if (mdfstr1[1].toString().matches("^\\([01][0-9],[01][0-9],[AWSDawsd]\\)")) {
             //ob(xx,yy,N/S/E/W,u)
             try {
-                int x1 = Integer.valueOf(mdfstr1[1].toString().substring(1, 3));
-                int y1 = Integer.valueOf(mdfstr1[1].toString().substring(4, 6));
+                //change from center to top left corner
+                int centerX = Integer.valueOf(mdfstr1[1].toString().substring(1, 3));
+                int centerY = Integer.valueOf(mdfstr1[1].toString().substring(4, 6));
+                int point = (-(((centerY - 19) * 15) - centerX)) - 16;
+
+                int x1 = point % 15;
+                int y1 = 19 - ((point - x1) / 15);
+//                int x1 = Integer.valueOf(mdfstr1[1].toString().substring(1, 3));
+//                int y1 = Integer.valueOf(mdfstr1[1].toString().substring(4, 6));
                 String loc = mdfstr1[1].toString().substring(7, 8).toLowerCase();
                 int boxid;
                 //String arrow = tempMsg.substring(11, 12).toUpperCase();
@@ -1303,6 +1321,7 @@ public class MainActivity extends AppCompatActivity {
                                 displayObstacle(obstacleX, obstacleY, obstacleArrow);
 
                             if (obstacleArrow != null) {
+
                                 if (arrowCoordinates == null)
                                     arrowCoordinates = "S(" + obstacleX + "," + obstacleY + "," + obstacleArrow + ")";
                                 else if (obstacleArrow != null && obstacleCount <= 5)
@@ -1316,7 +1335,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                     }
-                    //reset to set the next obstacle pointjm
+                    //reset to set the next obstacle point
                     if (receivedCoordinates == 3)
                         receivedCoordinates = 0;
                 }
@@ -1344,15 +1363,16 @@ public class MainActivity extends AppCompatActivity {
         else if ((topLeftCorner % 15) == 14)
             topLeftCorner -= 2;
 
-        int xCoord = topLeftCorner % 15;
-        int yCoord = 19 - ((topLeftCorner - xCoord) / 15);
+
+        int xCoord = (topLeftCorner + 16) % 15;
+        int yCoord = 19 - ((topLeftCorner + 16 - xCoord) / 15);
 
         startXValue.setText(String.valueOf(xCoord));
         startYValue.setText(String.valueOf(yCoord));
-
-        Intent messaging_intent = new Intent("outMsg");
-        messaging_intent.putExtra("outgoingmsg", "S(" + startXValue.getText().toString() + "," + startYValue.getText().toString() + ")");
-        LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
+//
+//        Intent messaging_intent = new Intent("outMsg");
+//        messaging_intent.putExtra("outgoingmsg", "S(" + startXValue.getText().toString() + "," + startYValue.getText().toString() + ")");
+//        LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
 
         Drawable box = this.getResources().getDrawable(R.drawable.box);
         Drawable robot = this.getResources().getDrawable(R.drawable.robot);
