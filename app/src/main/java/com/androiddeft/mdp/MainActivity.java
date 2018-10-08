@@ -149,6 +149,79 @@ public class MainActivity extends AppCompatActivity {
 
         startXValue.setText(String.valueOf(xCoord));
         startYValue.setText(String.valueOf(yCoord));
+        //Timer
+        start = findViewById(R.id.startButton);
+        stop = findViewById(R.id.stopButton);
+        time = findViewById(R.id.timerValue);
+        start.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                stopTimer = false;
+                startTime = SystemClock.uptimeMillis();
+                customHandler.postDelayed(updateTimerThread, 0);
+
+                topLeftCorner = 255;
+                currentDirection = "w";
+
+                robotStart();
+                Intent messaging_intent = new Intent("outMsg");
+                messaging_intent.putExtra("outgoingmsg", "fastest");
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
+                start.setVisibility(View.GONE);
+                stop.setVisibility(View.VISIBLE);
+
+
+            }
+        });
+
+        stop.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                stopTimer = true;
+                customHandler.removeCallbacks(null);
+                stop.setVisibility(View.GONE);
+                start.setVisibility(View.VISIBLE);
+                start.setText("Restart");
+                time.setText("00:00:000");
+
+            }
+        });
+
+        //Exploration
+        start1 = findViewById(R.id.startButton1);
+        stop1 = findViewById(R.id.stopButton1);
+        time1 = findViewById(R.id.timerValue1);
+        start1.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Intent messaging_intent = new Intent("outMsg");
+                messaging_intent.putExtra("outgoingmsg", "explore");
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
+                stopTimer1 = false;
+                startTime1 = SystemClock.uptimeMillis();
+                customHandler.postDelayed(updateTimerThread1, 0);
+                start1.setVisibility(View.GONE);
+                stop1.setVisibility(View.VISIBLE);
+
+            }
+        });
+
+        stop1.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                stopTimer1 = true;
+                customHandler.removeCallbacks(null);
+                stop1.setVisibility(View.GONE);
+                start1.setVisibility(View.VISIBLE);
+                start1.setText("Restart");
+                time1.setText("00:00:000");
+
+            }
+        });
 
 
         GridLayout foreground = findViewById(R.id.gridMapLayout);
@@ -512,12 +585,6 @@ public class MainActivity extends AppCompatActivity {
                 case "clear":
                     robotStart();
                     break;
-                case "explore":
-                    robotExplore();
-                    break;
-                case "fastest":
-                    robotFastest();
-                    break;
                 case "stop":
                     movementTextView.setText("Robot Stopped");
                     break;
@@ -588,33 +655,11 @@ public class MainActivity extends AppCompatActivity {
     private void exploreStop() {
         stopTimer = true;
         customHandler.removeCallbacks(null);
+        stop = findViewById(R.id.stopButton);
         stop.setVisibility(View.GONE);
         start.setVisibility(View.VISIBLE);
         start.setText("Restart");
         time.setText("00:00:000");
-    }
-
-    private void robotFastest() {
-        stopTimer = false;
-        startTime = SystemClock.uptimeMillis();
-        customHandler.postDelayed(updateTimerThread1, 0);
-
-        Intent messaging_intent = new Intent("outMsg");
-        messaging_intent.putExtra("outgoingmsg", "fastest");
-        LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
-        start.setVisibility(View.GONE);
-        stop.setVisibility(View.VISIBLE);
-    }
-
-    private void robotExplore() {
-        stopTimer1 = false;
-        startTime1 = SystemClock.uptimeMillis();
-        customHandler.postDelayed(updateTimerThread, 0);
-        Intent messaging_intent = new Intent("outMsg");
-        messaging_intent.putExtra("outgoingmsg", "explore");
-        LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
-        start.setVisibility(View.GONE);
-        stop.setVisibility(View.VISIBLE);
     }
 
 
@@ -785,50 +830,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private Runnable updateTimerThread = new Runnable() {
-
-        public void run() {
-            timeInMilliseconds = SystemClock.uptimeMillis() - startTime;
-
-            updatedTime = timeSwapBuff + timeInMilliseconds;
-
-            int secs = (int) (updatedTime / 1000);
-            int mins = secs / 60;
-            secs = secs % 60;
-            int milliseconds = (int) (updatedTime % 1000);
-            String localtime = "" + mins + ":" + String.format("%02d", secs)
-                    + ":" + String.format("%03d", milliseconds);
-            time.setText(localtime);
-            if (mins == 1) {
-                stopTimer = true;
-            }
-            if (!stopTimer)
-                customHandler.postDelayed(this, 0);
-        }
-    };
-
-    //Exploration
-    private Runnable updateTimerThread1 = new Runnable() {
-
-        public void run() {
-            timeInMilliseconds1 = SystemClock.uptimeMillis() - startTime1;
-
-            updatedTime1 = timeSwapBuff1 + timeInMilliseconds1;
-
-            int secs = (int) (updatedTime1 / 1000);
-            int mins = secs / 60;
-            secs = secs % 60;
-            int milliseconds = (int) (updatedTime1 % 1000);
-            String localtime = "" + mins + ":" + String.format("%02d", secs)
-                    + ":" + String.format("%03d", milliseconds);
-            time1.setText(localtime);
-            if (mins == 1) {
-                stopTimer1 = true;
-            }
-            if (!stopTimer1)
-                customHandler.postDelayed(this, 0);
-        }
-    };
 
     public void robotRotate(String direction) {
         Drawable box = this.getResources().getDrawable(R.drawable.box);
@@ -1422,4 +1423,49 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
+    private Runnable updateTimerThread = new Runnable() {
+        public void run() {
+            timeInMilliseconds = SystemClock.uptimeMillis() - startTime;
+
+            updatedTime = timeSwapBuff + timeInMilliseconds;
+
+            int secs = (int) (updatedTime / 1000);
+            int mins = secs / 60;
+            secs = secs % 60;
+            int milliseconds = (int) (updatedTime % 1000);
+            String localtime = "" + mins + ":" + String.format("%02d", secs)
+                    + ":" + String.format("%03d", milliseconds);
+            time.setText(localtime);
+            if (mins == 1) {
+                stopTimer = true;
+            }
+            if (!stopTimer)
+                customHandler.postDelayed(this, 0);
+        }
+    };
+
+    //Exploration
+    private Runnable updateTimerThread1 = new Runnable() {
+
+        public void run() {
+            timeInMilliseconds1 = SystemClock.uptimeMillis() - startTime1;
+
+            updatedTime1 = timeSwapBuff1 + timeInMilliseconds1;
+
+            int secs = (int) (updatedTime1 / 1000);
+            int mins = secs / 60;
+            secs = secs % 60;
+            int milliseconds = (int) (updatedTime1 % 1000);
+            String localtime = "" + mins + ":" + String.format("%02d", secs)
+                    + ":" + String.format("%03d", milliseconds);
+            time1.setText(localtime);
+            if (mins == 1) {
+                stopTimer1 = true;
+            }
+            if (!stopTimer1)
+                customHandler.postDelayed(this, 0);
+        }
+    };
+
 }
