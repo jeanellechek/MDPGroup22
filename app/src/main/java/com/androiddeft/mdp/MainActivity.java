@@ -987,14 +987,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (waypointList.contains(y)) {
                 t.setBackground(waypointImage);
                 t.setText("W");
-            }
-//            else if(arrowObstaclelist.contains(y)){
-//                t.setBackground(obstacleArrowImage);
-//                t.setTextColor(Color.parseColor("#000000"));
-//                t.setText(arrowObstacleInstruction.get(y).toUpperCase());
-//            }
-
-            else if (obstaclelist.size() > 0) {
+            } else if (obstaclelist.size() > 0) {
                 if (obstaclelist.contains(y)) {
                     for (int j = 0; j < obstaclelist.size(); j++) {
                         if (y == obstaclelist.get(j)) {
@@ -1020,22 +1013,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
-
-
-//                else {
-//                    for (int i = 0; i < arrowObstacles.size(); i++) {
-//                        String[] arrowsBoxID = arrowObstacles.get(i).split("/");
-//                        if (y == Integer.parseInt(arrowsBoxID[0])) {
-//                            t.setBackground(upImage);
-//                            t.setTextColor(Color.parseColor("#FFFFFF"));
-//                            t.setText(arrowsBoxID[1].toUpperCase());
-//                        }
-////                        else
-////                            t.setBackground(box);
-//                    }
-//                }
-
-
         }
         movementTextView.setText("Moved " + currentDirection);
     }
@@ -1113,6 +1090,7 @@ public class MainActivity extends AppCompatActivity {
         Drawable endpoint = this.getResources().getDrawable(R.drawable.endpoint);
         Drawable obstacleImage = this.getResources().getDrawable(R.drawable.obstacle);
         Drawable obstacleArrowImage = this.getResources().getDrawable(R.drawable.obstaclearrow);
+        Drawable exploredImage = this.getResources().getDrawable(R.drawable.explored);
 
         Drawable upImage = this.getResources().getDrawable(R.drawable.up);
         Drawable downImage = this.getResources().getDrawable(R.drawable.down);
@@ -1139,7 +1117,7 @@ public class MainActivity extends AppCompatActivity {
                 int boxid = (y * 15) + x;
                 TextView t2 = findViewById(boxid);
                 if (exploredmap.get(counter).toString().equals("1")) {
-                    t2.setBackground(robotImage);
+                    t2.setBackground(exploredImage);
                     t2.setText(exploredmap.get(counter).toString());
                     t2.setTextColor(Color.parseColor("#000000"));
                     t2.setTag("Explored");
@@ -1319,7 +1297,7 @@ public class MainActivity extends AppCompatActivity {
                                 else if (obstacleArrow != null && obstacleCount <= 5)
                                     arrowCoordinates += " \r\nS(" + obstacleX + "," + obstacleY + "," + obstacleArrow + ")";
                                 TextView txtArrow = findViewById(R.id.txtArrow);
-                                txtArrow.setText(arrowCoordinates);
+                                txtArrow.setText(arrowCoordinates.toUpperCase());
 
                             }
 
