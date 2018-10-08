@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
 
                 robotStart();
                 Intent messaging_intent = new Intent("outMsg");
-                messaging_intent.putExtra("outgoingmsg", "fastest");
+                messaging_intent.putExtra("outgoingmsg", "bfastest");
                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
                 start.setVisibility(View.GONE);
                 stop.setVisibility(View.VISIBLE);
@@ -193,12 +193,13 @@ public class MainActivity extends AppCompatActivity {
         start1 = findViewById(R.id.startButton1);
         stop1 = findViewById(R.id.stopButton1);
         time1 = findViewById(R.id.timerValue1);
+
         start1.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
                 Intent messaging_intent = new Intent("outMsg");
-                messaging_intent.putExtra("outgoingmsg", "explore");
+                messaging_intent.putExtra("outgoingmsg", "bexplore");
                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
                 stopTimer1 = false;
                 startTime1 = SystemClock.uptimeMillis();
@@ -588,11 +589,11 @@ public class MainActivity extends AppCompatActivity {
                 case "stop":
                     movementTextView.setText("Robot Stopped");
                     break;
-                case "explore stop":
+                case "stopexplore":
                     exploreStop();
                     break;
 
-                case "fastest stop":
+                case "stopfastest":
                     fastestStop();
                     break;
             }
@@ -644,22 +645,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fastestStop() {
-        stopTimer1 = true;
-        customHandler.removeCallbacks(null);
-        stop1.setVisibility(View.GONE);
-        start1.setVisibility(View.VISIBLE);
-        start1.setText("Restart");
-        time1.setText("00:00:000");
-    }
-
-    private void exploreStop() {
         stopTimer = true;
         customHandler.removeCallbacks(null);
-        stop = findViewById(R.id.stopButton);
         stop.setVisibility(View.GONE);
         start.setVisibility(View.VISIBLE);
         start.setText("Restart");
         time.setText("00:00:000");
+        time.setTextColor(Color.parseColor("#FF0000"));
+
+    }
+
+    private void exploreStop() {
+        stopTimer1 = true;
+        customHandler.removeCallbacks(null);
+        stop1 = findViewById(R.id.stopButton1);
+        stop1.setVisibility(View.GONE);
+        start1.setVisibility(View.VISIBLE);
+        start1.setText("Restart");
+        time1.setText("00:00:000");
+        time1.setTextColor(Color.parseColor("#FF0000"));
     }
 
 
