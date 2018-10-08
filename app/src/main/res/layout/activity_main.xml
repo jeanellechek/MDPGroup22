@@ -38,7 +38,9 @@
                     android:id="@+id/startLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dp"
                     android:background="#000066"
                     android:orientation="horizontal">
 
@@ -162,7 +164,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="120dp"
                     android:layout_below="@+id/waypointLayout"
-                    android:layout_margin="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="5dp"
                     android:background="#000066"
                     android:orientation="horizontal">
 

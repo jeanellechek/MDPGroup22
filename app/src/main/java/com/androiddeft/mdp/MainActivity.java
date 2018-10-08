@@ -639,7 +639,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (obstacleArrow != null && obstacleCount <= 5) {
             //with arrow
-            op.setText(obstacleArrow);
+            op.setText(obstacleArrow.toUpperCase());
             op.setBackground(obstacleArrowImage);
             op.setTextColor(Color.parseColor("#000000"));
             op.setGravity(Gravity.CENTER);
@@ -1012,7 +1012,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }
-            }
+            } else if (exploredmap.contains(y))
+                t.setBackground(box);
         }
         movementTextView.setText("Moved " + currentDirection);
     }
@@ -1139,15 +1140,15 @@ public class MainActivity extends AppCompatActivity {
                     t2.setTag("GOAL");
                     t2.setText("");
                 }
-//
-//                for (int i = 0; i < arrowObstacles.size(); i++) {
-//                    String[] arrowsBoxID = arrowObstacles.get(i).split("/");
-//                    if (boxid == Integer.parseInt(arrowsBoxID[0])) {
-//                        t2.setBackground(upImage);
-//                        t2.setTextColor(Color.parseColor("#FFFFFF"));
-//                        t2.setText(arrowsBoxID[1].toUpperCase());
-//                    }
-//                }
+                //
+                //                for (int i = 0; i < arrowObstacles.size(); i++) {
+                //                    String[] arrowsBoxID = arrowObstacles.get(i).split("/");
+                //                    if (boxid == Integer.parseInt(arrowsBoxID[0])) {
+                //                        t2.setBackground(upImage);
+                //                        t2.setTextColor(Color.parseColor("#FFFFFF"));
+                //                        t2.setText(arrowsBoxID[1].toUpperCase());
+                //                    }
+                //                }
 
             }
         }
@@ -1203,16 +1204,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-//            for (int i = 0; i < 300; i++) {
-//                TextView t3 = findViewById(i);
-//                for (int j = 0; j < obstaclelist.size(); j++) {
-//                    if (i == obstaclelist.get(j)) {
-//                        noArrowObstacles.add(i);
-//                        t3.setBackground(obstacleImage);
-//                        t3.setText("");
-//                    }
-//                }
-//            }
+        //            for (int i = 0; i < 300; i++) {
+        //                TextView t3 = findViewById(i);
+        //                for (int j = 0; j < obstaclelist.size(); j++) {
+        //                    if (i == obstaclelist.get(j)) {
+        //                        noArrowObstacles.add(i);
+        //                        t3.setBackground(obstacleImage);
+        //                        t3.setText("");
+        //                    }
+        //                }
+        //            }
 
         // }
         for (int i = 0; i < arrowObstacles.size(); i++) {
