@@ -982,7 +982,6 @@ public class MainActivity extends AppCompatActivity {
             if (t.getTag().equals("Explored") || (t.getTag().equals("Robot")) || t.getTag().equals("GOAL")) {
                 if (y == 12 || y == 13 || y == 14 || y == 27 || y == 28 || y == 29 || y == 42 || y == 43 || y == 44) {
                     t.setBackground(endpoint);
-                    t.setText("");
                 }
             } else if (waypointList.contains(y)) {
                 t.setBackground(waypointImage);
@@ -1138,7 +1137,6 @@ public class MainActivity extends AppCompatActivity {
                 if (boxid == 12 || boxid == 13 || boxid == 14 || boxid == 27 || boxid == 28 || boxid == 29 || boxid == 42 || boxid == 43 || boxid == 44) {
                     t2.setBackground(endpoint);
                     t2.setTag("GOAL");
-                    t2.setText("");
                 }
                 //
                 //                for (int i = 0; i < arrowObstacles.size(); i++) {
@@ -1175,8 +1173,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        String bin1 = new BigInteger(mdfstr1[2].toString(), 16).toString(2);
+        String bin1 = new BigInteger("1" + mdfstr1[2].toString(), 16).toString(2);
         Log.d(TAG, bin1);
+
 
         for (int temp = 1; temp < bin1.length(); temp++) {
             obstaclemap.add(Integer.parseInt(bin1.substring(temp, temp + 1)));
