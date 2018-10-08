@@ -1021,6 +1021,7 @@ public class MainActivity extends AppCompatActivity {
         Drawable box = this.getResources().getDrawable(R.drawable.box);
         Drawable robotImage = this.getResources().getDrawable(R.drawable.robot);
         Drawable endpoint = this.getResources().getDrawable(R.drawable.endpoint);
+        Drawable waypointImage = this.getResources().getDrawable(R.drawable.waypoint);
 
         Drawable upImage = this.getResources().getDrawable(R.drawable.up);
         Drawable downImage = this.getResources().getDrawable(R.drawable.down);
@@ -1074,6 +1075,15 @@ public class MainActivity extends AppCompatActivity {
                     t.setText("1");
                     t.setTextColor(Color.parseColor("#FF0000"));
                     t.setTag("Robot");
+                }
+            }
+            if (waypointList.contains(i)) {
+                if (exploredmap.get(i).equals(1)) {
+                    t.setBackground(waypointImage);
+                    t.setText("1");
+                } else {
+                    t.setBackground(waypointImage);
+                    t.setText("W");
                 }
             }
         }
