@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Integer> obstaclemap = new ArrayList<>(); //from p2
     ArrayList<Integer> obstaclelist = new ArrayList<Integer>();//without arrows
     ArrayList<String> obstacleInstruction = new ArrayList<String>(); //for manual
+    ArrayList<String> arrowObstacleInstruction = new ArrayList<String>();
 
 
     int receivedCoordinates = 0;
@@ -629,6 +630,7 @@ public class MainActivity extends AppCompatActivity {
     private void displayObstacle(String obstacleX, String obstacleY, String obstacleArrow) {
         Drawable upImage = this.getResources().getDrawable(R.drawable.up);
         Drawable obstacleImage = this.getResources().getDrawable(R.drawable.obstacle);
+        Drawable obstacleArrowImage = this.getResources().getDrawable(R.drawable.obstaclearrow);
         int obstacleXValue = Integer.valueOf(obstacleX);
         int obstacleYValue = Integer.valueOf(obstacleY);
 
@@ -638,12 +640,14 @@ public class MainActivity extends AppCompatActivity {
         if (obstacleArrow != null && obstacleCount <= 5) {
             //with arrow
             op.setText(obstacleArrow);
-            op.setBackground(upImage);
-            op.setTextColor(Color.parseColor("#FFFFFF"));
+            op.setBackground(obstacleArrowImage);
+            op.setTextColor(Color.parseColor("#000000"));
             op.setGravity(Gravity.CENTER);
             op.setGravity(Gravity.CENTER);
             obstacleCount++;
             arrowObstacles.add(obstaclePoint + "/" + obstacleArrow);
+            arrowObstaclelist.add(obstaclePoint);
+            arrowObstacleInstruction.add(obstacleArrow);
             Toast.makeText(getApplicationContext(), "Obstacle arrow created at " + obstaclePoint, Toast.LENGTH_SHORT).show();
         }
 
@@ -827,8 +831,6 @@ public class MainActivity extends AppCompatActivity {
     };
 
     public void robotRotate(String direction) {
-
-
         Drawable box = this.getResources().getDrawable(R.drawable.box);
         Drawable robot = this.getResources().getDrawable(R.drawable.robot);
 
@@ -910,6 +912,7 @@ public class MainActivity extends AppCompatActivity {
         Drawable endpoint = this.getResources().getDrawable(R.drawable.endpoint);
         Drawable obstacleImage = this.getResources().getDrawable(R.drawable.obstacle);
         Drawable waypointImage = this.getResources().getDrawable(R.drawable.waypoint);
+        Drawable obstacleArrowImage = this.getResources().getDrawable(R.drawable.obstaclearrow);
 
         Drawable upImage = this.getResources().getDrawable(R.drawable.up);
         Drawable downImage = this.getResources().getDrawable(R.drawable.down);
@@ -942,34 +945,31 @@ public class MainActivity extends AppCompatActivity {
                     topLeftCorner -= 1;
                 break;
         }
-        String size = "";
-        for (int i = 0; i < arrowObstacles.size(); i++) {
-            size += arrowObstacles.get(i).toString() + "\n";
-        }
-        Log.d(TAG, size);
         for (int y = 0; y < 300; y++) {
             TextView t = findViewById(y);
             if (y == topLeftCorner || y == topLeftCorner + 1 || y == topLeftCorner + 2 || y == topLeftCorner + 15 || y == topLeftCorner + 16 || y == topLeftCorner + 17
                     || y == topLeftCorner + 30 || y == topLeftCorner + 31 || y == topLeftCorner + 32) {
                 //if (topLeftCorner + y < topLeftCorner + 3)
-                if (y == topLeftCorner + 16) {
-                    t.setText("");
-                    switch (currentDirection) {
-                        case "w":
-                            t.setBackground(upImage);
-                            break;
-                        case "s":
-                            t.setBackground(downImage);
-                            break;
-                        case "a":
-                            t.setBackground(leftImage);
-                            break;
-                        case "d":
-                            t.setBackground(rightImage);
-                            break;
-
+                if ((y == topLeftCorner + 16)) {
+                    if ((!arrowObstaclelist.contains(y))) {
+                        t.setText("");
+                        switch (currentDirection) {
+                            case "w":
+                                t.setBackground(upImage);
+                                break;
+                            case "s":
+                                t.setBackground(downImage);
+                                break;
+                            case "a":
+                                t.setBackground(leftImage);
+                                break;
+                            case "d":
+                                t.setBackground(rightImage);
+                                break;
+                        }
                     }
-                } else {
+
+                } else if (!arrowObstaclelist.contains(y)) {
                     t.setBackground(robot);
                     t.setText("1");
                     t.setTextColor(Color.parseColor("#FF0000"));
@@ -983,36 +983,42 @@ public class MainActivity extends AppCompatActivity {
                 if (y == 12 || y == 13 || y == 14 || y == 27 || y == 28 || y == 29 || y == 42 || y == 43 || y == 44) {
                     t.setBackground(endpoint);
                     t.setText("");
-                } else if (obstaclelist.size() > 0) {
-                    if (obstaclelist.contains(y)) {
-                        for (int j = 0; j < obstaclelist.size(); j++) {
-                            if (y == obstaclelist.get(j)) {
-                                if (arrowObstaclelist.size() > 0) {
-                                    if (arrowObstaclelist.contains(obstaclelist.get(j))) {
-                                        for (int temp1 = 0; temp1 < arrowObstacles.size(); temp1++) {
-                                            String[] arrowsBoxID = arrowObstacles.get(temp1).split("/");
-                                            if (Integer.valueOf(arrowsBoxID[0].toString()) == y) {
-                                                t.setBackground(upImage);
-                                                t.setTextColor(Color.parseColor("#FFFFFF"));
-                                                t.setText(arrowsBoxID[1].toUpperCase());
-                                            }
+                }
+            } else if (waypointList.contains(y)) {
+                t.setBackground(waypointImage);
+                t.setText("W");
+            }
+//            else if(arrowObstaclelist.contains(y)){
+//                t.setBackground(obstacleArrowImage);
+//                t.setTextColor(Color.parseColor("#000000"));
+//                t.setText(arrowObstacleInstruction.get(y).toUpperCase());
+//            }
+
+            else if (obstaclelist.size() > 0) {
+                if (obstaclelist.contains(y)) {
+                    for (int j = 0; j < obstaclelist.size(); j++) {
+                        if (y == obstaclelist.get(j)) {
+                            if (arrowObstaclelist.size() > 0) {
+                                if (arrowObstaclelist.contains(obstaclelist.get(j))) {
+                                    for (int temp1 = 0; temp1 < arrowObstacles.size(); temp1++) {
+                                        String[] arrowsBoxID = arrowObstacles.get(temp1).split("/");
+                                        if (Integer.valueOf(arrowsBoxID[0].toString()) == y) {
+                                            t.setBackground(obstacleArrowImage);
+                                            t.setTextColor(Color.parseColor("#000000"));
+                                            t.setText(arrowsBoxID[1].toUpperCase());
                                         }
-                                    } else {
-                                        t.setBackground(obstacleImage);
-                                        t.setText("");
                                     }
                                 } else {
                                     t.setBackground(obstacleImage);
                                     t.setText("");
                                 }
+                            } else {
+                                t.setBackground(obstacleImage);
+                                t.setText("");
                             }
                         }
                     }
                 }
-            }
-            if (waypointList.contains(y)) {
-                t.setBackground(waypointImage);
-                t.setText("W");
             }
 
 
@@ -1106,6 +1112,7 @@ public class MainActivity extends AppCompatActivity {
         Drawable robotImage = this.getResources().getDrawable(R.drawable.robot);
         Drawable endpoint = this.getResources().getDrawable(R.drawable.endpoint);
         Drawable obstacleImage = this.getResources().getDrawable(R.drawable.obstacle);
+        Drawable obstacleArrowImage = this.getResources().getDrawable(R.drawable.obstaclearrow);
 
         Drawable upImage = this.getResources().getDrawable(R.drawable.up);
         Drawable downImage = this.getResources().getDrawable(R.drawable.down);
@@ -1245,8 +1252,8 @@ public class MainActivity extends AppCompatActivity {
                             for (int temp1 = 0; temp1 < arrowObstacles.size(); temp1++) {
                                 String[] arrowsBoxID = arrowObstacles.get(temp1).split("/");
                                 if (Integer.valueOf(arrowsBoxID[0].toString()) == i) {
-                                    t3.setBackground(upImage);
-                                    t3.setTextColor(Color.parseColor("#FFFFFF"));
+                                    t3.setBackground(obstacleArrowImage);
+                                    t3.setTextColor(Color.parseColor("#000000"));
                                     t3.setText(arrowsBoxID[1].toUpperCase());
                                 }
                             }
@@ -1313,6 +1320,7 @@ public class MainActivity extends AppCompatActivity {
                                     arrowCoordinates += " \r\nS(" + obstacleX + "," + obstacleY + "," + obstacleArrow + ")";
                                 TextView txtArrow = findViewById(R.id.txtArrow);
                                 txtArrow.setText(arrowCoordinates);
+
                             }
 
                             break;
@@ -1361,6 +1369,7 @@ public class MainActivity extends AppCompatActivity {
         Drawable robot = this.getResources().getDrawable(R.drawable.robot);
         Drawable endpoint = this.getResources().getDrawable(R.drawable.endpoint);
         Drawable obstacleImage = this.getResources().getDrawable(R.drawable.obstacle);
+        Drawable obstacleArrowImage = this.getResources().getDrawable(R.drawable.obstaclearrow);
 
         Drawable upImage = this.getResources().getDrawable(R.drawable.up);
         Drawable downImage = this.getResources().getDrawable(R.drawable.down);
@@ -1410,8 +1419,8 @@ public class MainActivity extends AppCompatActivity {
                     for (int i = 0; i < arrowObstacles.size(); i++) {
                         String[] arrowsBoxID = arrowObstacles.get(i).split("/");
                         if (y == Integer.parseInt(arrowsBoxID[0])) {
-                            t.setBackground(upImage);
-                            t.setTextColor(Color.parseColor("#FFFFFF"));
+                            t.setBackground(obstacleArrowImage);
+                            t.setTextColor(Color.parseColor("#000000"));
                             t.setText(arrowsBoxID[1].toUpperCase());
                         } else {
                             t.setText("");
