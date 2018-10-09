@@ -1083,7 +1083,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             if (waypointList.contains(i)) {
-                if (exploredmap.get(i).equals(1)) {
+                int tempx = i % 15;
+                int tempy = 19 - ((i - tempx) / 15);
+                int tempyboxid = (tempy * 15) + tempx;
+                if (exploredmap.get(tempyboxid).toString() == "1") {
                     t.setBackground(waypointImage);
                     t.setText("1");
                 } else {
@@ -1156,6 +1159,8 @@ public class MainActivity extends AppCompatActivity {
                     t2.setTag("Unknown");
                     t2.setTypeface(null, Typeface.NORMAL);
                 }
+
+
                 counter++;
 
                 if (boxid == 12 || boxid == 13 || boxid == 14 || boxid == 27 || boxid == 28 || boxid == 29 || boxid == 42 || boxid == 43 || boxid == 44) {
