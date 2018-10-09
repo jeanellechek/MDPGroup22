@@ -436,7 +436,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/txtMDF1"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginTop="22dp"
+                    android:layout_marginTop="15dp"
                     android:inputType="textMultiLine"
                     android:text="MDF2 string here"
                     android:textColor="#ffffff" />

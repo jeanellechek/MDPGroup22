@@ -144,8 +144,8 @@ public class MainActivity extends AppCompatActivity {
         startYValue = findViewById(R.id.startYValue);
 
 
-        int xCoord = topLeftCorner % 15;
-        int yCoord = 19 - ((topLeftCorner - xCoord) / 15);
+        int xCoord = (topLeftCorner + 16) % 15;
+        int yCoord = 19 - (((topLeftCorner + 16) - xCoord) / 15);
 
         startXValue.setText(String.valueOf(xCoord));
         startYValue.setText(String.valueOf(yCoord));
@@ -241,22 +241,22 @@ public class MainActivity extends AppCompatActivity {
             boxID.setTextColor(Color.parseColor("#FF0000"));
             boxID.setGravity(Gravity.CENTER);
 
-            boxID.setOnLongClickListener(new View.OnLongClickListener() {
-                public boolean onLongClick(View view) {
-                    topLeftCorner = view.getId();
-                    if (topLeftCorner >= 150) {
-                        robotStart();
-                        Toast.makeText(getApplicationContext(), "Start coordinates selected. ",
-                                Toast.LENGTH_SHORT).show();
-
-                    } else
-                        Toast.makeText(getApplicationContext(), "Starting coordinates must be before row 10.",
-                                Toast.LENGTH_SHORT).show();
-
-
-                    return true;    // <- set to true
-                }
-            });
+//                boxID.setOnLongClickListener(new View.OnLongClickListener() {
+//                    public boolean onLongClick(View view) {
+//                        topLeftCorner = view.getId();
+//                        if (topLeftCorner >= 150) {
+//                            robotStart();
+//                            Toast.makeText(getApplicationContext(), "Start coordinates selected. ",
+//                                    Toast.LENGTH_SHORT).show();
+//
+//                        } else
+//                            Toast.makeText(getApplicationContext(), "Starting coordinates must be before row 10.",
+//                                    Toast.LENGTH_SHORT).show();
+//
+//
+//                        return true;    // <- set to true
+//                    }
+//                });
             boxID.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -586,9 +586,6 @@ public class MainActivity extends AppCompatActivity {
                 case "clear":
                     robotStart();
                     break;
-                case "stop":
-                    movementTextView.setText("Robot Stopped");
-                    break;
                 case "stopexplore":
                     exploreStop();
                     break;
@@ -612,7 +609,7 @@ public class MainActivity extends AppCompatActivity {
                     case 'f':
                         displayFinalMDF(t1);
                         break;
-                    case 't': //eg: t:f8007e00ff01fe03fc07f00ffc1ff83ffc7f00ee001c002000400000000000000007000e001f:(00,00,W):00000000010000000011c0000
+                    case 't': //eg: t:f8007e00ff01fe03fc07f00ffc1ff83ffc7f00ee001c002000400000000000000007000e001f:(01,01,W):00000000010000000011c0000
                         tempMsg = t1.substring(2, t1.length());
                         obstaclelist.clear();
                         if (autoMode == false)
@@ -652,7 +649,7 @@ public class MainActivity extends AppCompatActivity {
         start.setText("Restart");
         time.setText("00:00:000");
         time.setTextColor(Color.parseColor("#FF0000"));
-
+        movementTextView.setText("Robot Stopped");
     }
 
     private void exploreStop() {
@@ -664,6 +661,7 @@ public class MainActivity extends AppCompatActivity {
         start1.setText("Restart");
         time1.setText("00:00:000");
         time1.setTextColor(Color.parseColor("#FF0000"));
+        movementTextView.setText("Robot Stopped");
     }
 
 
@@ -686,7 +684,7 @@ public class MainActivity extends AppCompatActivity {
         int obstaclePoint = -(((obstacleYValue - 19) * 15) - obstacleXValue);
         TextView op = findViewById(obstaclePoint);
 
-        if (obstacleArrow != null && obstacleCount <= 5) {
+        if (obstacleCount <= 5) {
             //with arrow
             op.setText(obstacleArrow.toUpperCase());
             op.setBackground(obstacleArrowImage);
@@ -908,7 +906,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
-        movementTextView.setText("Turning " + currentDirection);
+        movementTextView.setText("Turning " + convertToDirection(currentDirection));
     }
 
     public void robotMovement() {
@@ -1019,7 +1017,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (exploredmap.contains(y))
                 t.setBackground(box);
         }
-        movementTextView.setText("Moved " + currentDirection);
+        movementTextView.setText("Moved " + convertToDirection(currentDirection));
     }
 
     protected void setRobot(int boxid, String direction) {
@@ -1186,8 +1184,8 @@ public class MainActivity extends AppCompatActivity {
 
                 int x1 = point % 15;
                 int y1 = 19 - ((point - x1) / 15);
-//                int x1 = Integer.valueOf(mdfstr1[1].toString().substring(1, 3));
-//                int y1 = Integer.valueOf(mdfstr1[1].toString().substring(4, 6));
+                //                int x1 = Integer.valueOf(mdfstr1[1].toString().substring(1, 3));
+                //                int y1 = Integer.valueOf(mdfstr1[1].toString().substring(4, 6));
                 String loc = mdfstr1[1].toString().substring(7, 8).toLowerCase();
                 int boxid;
                 //String arrow = tempMsg.substring(11, 12).toUpperCase();
@@ -1214,11 +1212,12 @@ public class MainActivity extends AppCompatActivity {
             obstaclemap.add(Integer.parseInt(bin1.substring(temp, temp + 1)));
             //Log.d(TAG, mapdata.get(temp).toString());
         }
-        String string1 = "";
-        for (int temp = 0; temp < obstaclemap.size(); temp++) {
-            string1 += obstaclemap.get(temp).toString();
-        }
-        Log.d(TAG, String.valueOf(string1));
+//            String string1 = "";
+//            for (int temp = 0; temp < obstaclemap.size(); temp++) {
+//                string1 += obstaclemap.get(temp).toString();
+//            }
+//            Log.d(TAG, String.valueOf(string1));
+
         int tempint = 0;
         for (int i = 0; i < exploredmap.size(); i++) {
             //Log.d(TAG, exploredmap.get(i).toString());
@@ -1257,7 +1256,6 @@ public class MainActivity extends AppCompatActivity {
             TextView t3 = findViewById(i);
             for (int j = 0; j < obstaclelist.size(); j++) {
                 if (i == obstaclelist.get(j)) {
-                    //     noArrowObstacles.add(i);// whats this for??
                     if (arrowObstaclelist.size() > 0) {
                         if (arrowObstaclelist.contains(obstaclelist.get(j))) {
                             for (int temp1 = 0; temp1 < arrowObstacles.size(); temp1++) {
@@ -1368,15 +1366,16 @@ public class MainActivity extends AppCompatActivity {
             topLeftCorner -= 2;
 
 
-        int xCoord = (topLeftCorner + 16) % 15;
-        int yCoord = 19 - ((topLeftCorner + 16 - xCoord) / 15);
-
-        startXValue.setText(String.valueOf(xCoord));
-        startYValue.setText(String.valueOf(yCoord));
+        //dynamic start coordinates
+//            int xCoord = (topLeftCorner+16) % 15;
+//            int yCoord = 19 - (((topLeftCorner+16) - xCoord) / 15);
 //
-//        Intent messaging_intent = new Intent("outMsg");
-//        messaging_intent.putExtra("outgoingmsg", "S(" + startXValue.getText().toString() + "," + startYValue.getText().toString() + ")");
-//        LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
+//            startXValue.setText(String.valueOf(xCoord));
+//            startYValue.setText(String.valueOf(yCoord));
+        //
+        //        Intent messaging_intent = new Intent("outMsg");
+        //        messaging_intent.putExtra("outgoingmsg", "S(" + startXValue.getText().toString() + "," + startYValue.getText().toString() + ")");
+        //        LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
 
         Drawable box = this.getResources().getDrawable(R.drawable.box);
         Drawable robot = this.getResources().getDrawable(R.drawable.robot);
@@ -1421,7 +1420,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (y == 12 || y == 13 || y == 14 || y == 27 || y == 28 || y == 29 || y == 42 || y == 43 || y == 44) {
                     t.setBackground(endpoint);
                     t.setText("");
-                } else if (obstaclelist.contains(y) == true) //checking of obstacles with no arrows
+                } else if (obstaclelist.contains(y) == true)
                     t.setBackground(obstacleImage);
                 else { //checking for obstacles with arrows
                     if (arrowObstacles.size() == 0) {
@@ -1491,5 +1490,24 @@ public class MainActivity extends AppCompatActivity {
                 customHandler.postDelayed(this, 0);
         }
     };
+
+    public String convertToDirection(String chars) {
+        String convertedDirection = "direction";
+        switch (chars.toLowerCase()) {
+            case "a":
+                convertedDirection = "left";
+                break;
+            case "w":
+                convertedDirection = "up";
+                break;
+            case "d":
+                convertedDirection = "right";
+                break;
+            case "s":
+                convertedDirection = "down";
+                break;
+        }
+        return convertedDirection;
+    }
 
 }
