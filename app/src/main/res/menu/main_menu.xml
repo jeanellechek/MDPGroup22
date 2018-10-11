@@ -16,6 +16,10 @@
         android:id="@+id/command"
         android:title="Configure command"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/clearMap"
+        android:title="Clear map"
+        app:showAsAction="never" />
 
 
 </menu>
