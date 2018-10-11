@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
 
                 robotStart();
                 Intent messaging_intent = new Intent("outMsg");
-                messaging_intent.putExtra("outgoingmsg", "bfastest");
+                messaging_intent.putExtra("outgoingmsg", "pfastest");
                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
                 start.setVisibility(View.GONE);
                 stop.setVisibility(View.VISIBLE);
