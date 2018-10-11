@@ -157,6 +157,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+
+                robotStart();
                 stopTimer = false;
                 startTime = SystemClock.uptimeMillis();
                 customHandler.postDelayed(updateTimerThread, 0);
@@ -583,9 +585,9 @@ public class MainActivity extends AppCompatActivity {
                 case "w":
                     robotMovement();
                     break;
-                case "clear":
-                    robotStart();
-                    break;
+//                case "clear":
+//                    robotStart();
+//                    break;
                 case "stopexplore":
                     exploreStop();
                     break;
