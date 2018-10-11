@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent messaging_intent = new Intent("outMsg");
-                messaging_intent.putExtra("outgoingmsg", "bexplore");
+                messaging_intent.putExtra("outgoingmsg", "pexplore");
                 LocalBroadcastManager.getInstance(mContext).sendBroadcast(messaging_intent);
                 stopTimer1 = false;
                 startTime1 = SystemClock.uptimeMillis();
@@ -1108,9 +1108,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     protected void mapDecoder(String msg) {
-        obstaclelist.clear();
-        exploredmap.clear();
-        obstaclemap.clear();
+        obstaclelist.clear(); //without arrow
+        exploredmap.clear(); //from p1
+        obstaclemap.clear(); //from p2
 
         Drawable box = this.getResources().getDrawable(R.drawable.box);
         Drawable robotImage = this.getResources().getDrawable(R.drawable.robot);
