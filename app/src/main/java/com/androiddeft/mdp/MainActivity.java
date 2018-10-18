@@ -1469,7 +1469,7 @@ public class MainActivity extends AppCompatActivity {
             String localtime = "" + mins + ":" + String.format("%02d", secs)
                     + ":" + String.format("%03d", milliseconds);
             time.setText(localtime);
-            if (mins == 1) {
+            if (mins == 60) {
                 stopTimer = true;
             }
             if (!stopTimer)
@@ -1492,7 +1492,7 @@ public class MainActivity extends AppCompatActivity {
             String localtime = "" + mins + ":" + String.format("%02d", secs)
                     + ":" + String.format("%03d", milliseconds);
             time1.setText(localtime);
-            if (mins == 1) {
+            if (mins == 60) {
                 stopTimer1 = true;
             }
             if (!stopTimer1)
