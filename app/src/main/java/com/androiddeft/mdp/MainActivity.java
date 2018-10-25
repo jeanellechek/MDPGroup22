@@ -1334,26 +1334,11 @@ public class MainActivity extends AppCompatActivity {
                             if (obstacleArrow != null) {
 
                                 if (arrowCoordinates == null)
-                                    arrowCoordinates = "O(" + obstacleX + "," + obstacleY + "," + obstacleArrow + ")";
+                                    arrowCoordinates = "S(" + obstacleX + "," + obstacleY + "," + obstacleArrow + ")";
                                 else if (obstacleArrow != null && obstacleCount <= 5)
-                                    arrowCoordinates += " \r\nO(" + obstacleX + "," + obstacleY + "," + obstacleArrow + ")";
-
-                                switch (obstacleArrow.toLowerCase()) {
-                                    case "a":
-                                        obstacleArrow = "Left";
-                                        break;
-                                    case "w":
-                                        obstacleArrow = "Up";
-                                        break;
-                                    case "d":
-                                        obstacleArrow = "Right";
-                                        break;
-                                    case "s":
-                                        obstacleArrow = "Down";
-                                        break;
-                                }
+                                    arrowCoordinates += " \r\nS(" + obstacleX + "," + obstacleY + "," + obstacleArrow + ")";
                                 TextView txtArrow = findViewById(R.id.txtArrow);
-                                txtArrow.setText(obstacleX + "," + obstacleY + "," + obstacleArrow);
+                                txtArrow.setText(arrowCoordinates.toUpperCase());
 
                             }
 
