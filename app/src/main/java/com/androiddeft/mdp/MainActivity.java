@@ -1297,6 +1297,7 @@ public class MainActivity extends AppCompatActivity {
         String obstacleX = null;
         String obstacleY = null;
         String obstacleArrow = null;
+        String arrowDirection = null;
 
         if (obstacleMatcher.find()) {
             //ob(xx,yy,N/S/E/W,u)
@@ -1332,13 +1333,29 @@ public class MainActivity extends AppCompatActivity {
                                 displayObstacle(obstacleX, obstacleY, obstacleArrow);
 
                             if (obstacleArrow != null) {
+                                switch (obstacleArrow.toLowerCase()) {
+                                    case "a":
+                                        obstacleArrow = "Left";
+                                        break;
+                                    case "w":
+                                        obstacleArrow = "Up";
+                                        break;
+                                    case "s":
+                                        obstacleArrow = "Down";
+                                        break;
+                                    case "d":
+                                        obstacleArrow = "Right";
+                                        break;
 
+                                }
                                 if (arrowCoordinates == null)
-                                    arrowCoordinates = "S(" + obstacleX + "," + obstacleY + "," + obstacleArrow + ")";
+                                    arrowCoordinates = "O(" + obstacleX + "," + obstacleY + "," + obstacleArrow + ")";
                                 else if (obstacleArrow != null && obstacleCount <= 5)
-                                    arrowCoordinates += " \r\nS(" + obstacleX + "," + obstacleY + "," + obstacleArrow + ")";
+                                    arrowCoordinates += " \r\nO(" + obstacleX + "," + obstacleY + "," + obstacleArrow + ")";
+
+
                                 TextView txtArrow = findViewById(R.id.txtArrow);
-                                txtArrow.setText(arrowCoordinates.toUpperCase());
+                                txtArrow.setText(arrowCoordinates);
 
                             }
 
